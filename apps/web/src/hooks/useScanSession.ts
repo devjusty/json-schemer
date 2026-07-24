@@ -22,6 +22,7 @@ export function useScanSession() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [selectBusy, setSelectBusy] = useState(false);
   const [cancelBusyScanId, setCancelBusyScanId] = useState<string | null>(null);
   const cancelRequestRef = useRef(new Map<string, number>());
   const selectionRequest = useRef(0);
@@ -29,7 +30,10 @@ export function useScanSession() {
   const scanRef = useRef<Scan | null>(null);
   const pageRefreshScan = useRef(0);
   const pageRefreshRequest = useRef(0);
-  scanRef.current = scan;
+
+  useEffect(() => {
+    scanRef.current = scan;
+  }, [scan]);
 
   useEffect(() => {
     const generation = scanGeneration.current;
@@ -138,6 +142,7 @@ export function useScanSession() {
     const generation = scanGeneration.current;
     const scanId = scan.id;
     setSelectedId(id);
+    setSelectBusy(true);
     try {
       const nextDetail = await getPageDetail(scanId, id);
       if (
@@ -155,10 +160,14 @@ export function useScanSession() {
       ) {
         setError(messageFrom(cause));
       }
+    } finally {
+      if (requestId === selectionRequest.current && generation === scanGeneration.current) {
+        setSelectBusy(false);
+      }
     }
   }
 
   const cancelBusy = scan ? cancelBusyScanId === scan.id : false;
 
-  return { scan, pages, detail, selectedId, error, busy, cancelBusy, startScan, cancelScan, selectPage };
+  return { scan, pages, detail, selectedId, error, busy, selectBusy, cancelBusy, startScan, cancelScan, selectPage };
 }

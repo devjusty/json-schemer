@@ -26,9 +26,17 @@ export interface PageDetail {
 
 async function request<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
   const response = await fetch(input, init);
-  const body = (await response.json()) as T & { error?: string };
-  if (!response.ok) throw new Error(body.error ?? `Request failed: ${response.status}`);
-  return body;
+  if (!response.ok) {
+    let message = `Request failed: ${response.status}`;
+    try {
+      const body = (await response.json()) as { error?: string };
+      if (body.error) message = body.error;
+    } catch {
+      /* non-JSON error body — fall back to status code */
+    }
+    throw new Error(message);
+  }
+  return (await response.json()) as T;
 }
 
 export function createScan(input: { targetUrl: string; sitemapUrl: string | null }): Promise<Scan> {
