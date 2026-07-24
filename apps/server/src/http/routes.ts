@@ -120,10 +120,13 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
       connection: "keep-alive",
     });
     const send = (event: unknown) => reply.raw.write(`data: ${JSON.stringify(event)}\n\n`);
+    const unsubscribe = dependencies.manager.subscribe(request.params.scanId, send);
+    request.raw.on("close", unsubscribe);
     send({
       type: "scan_state",
       progress: {
         scanId: scan.id,
+        status: scan.status,
         discovered: scan.discovered,
         queued: scan.queued,
         completed: scan.completed,
@@ -131,8 +134,6 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
         failed: scan.failed,
       },
     });
-    const unsubscribe = dependencies.manager.subscribe(request.params.scanId, send);
-    request.raw.on("close", unsubscribe);
   });
 
   app.get<{ Params: { scanId: string; format: string } }>(

@@ -37,6 +37,7 @@ export type ExportScope = "site" | "page";
 
 export interface ScanProgress {
   scanId: string;
+  status: ScanStatus;
   discovered: number;
   queued: number;
   completed: number;

@@ -4,9 +4,12 @@ import { createDatabase, createRepositories } from "@schemer/storage";
 import { describe, expect, it } from "vitest";
 import { ScanManager } from "../src/scan/scan-manager";
 
+type ScanEvent = Parameters<Parameters<ScanManager["subscribe"]>[1]>[0];
+
 describe("scan manager", () => {
   it("persists each page and completes after partial failure", async () => {
     const repositories = createRepositories(createDatabase(":memory:"));
+    const events: ScanEvent[] = [];
     const manager = new ScanManager({
       repositories,
       discover: async () => ({
@@ -28,11 +31,13 @@ describe("scan manager", () => {
           : { status: "http_error", httpStatus: 404, contentType: "text/html", message: "HTTP 404", durationMs: 2 },
       extract: extractJsonLd,
     });
+    manager.subscribe("scan-1", (event) => events.push(event));
 
     await manager.start({ targetUrl: "https://example.com", sitemapUrl: null, settings: DEFAULT_SCAN_SETTINGS });
     await manager.waitForIdle();
 
     expect(repositories.getActiveScan()).toMatchObject({ status: "completed", completed: 2, successful: 1, failed: 1 });
+    expect(events.find((event) => event.type === "scan_completed")?.progress).toMatchObject({ status: "completed" });
     expect(
       repositories
         .listPages("scan-1")

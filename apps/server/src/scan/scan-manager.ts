@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { FetchResult } from "@schemer/crawler";
 import { filterSitemapUrls } from "@schemer/crawler";
-import type { ScanProgress, ScanSettings } from "@schemer/domain";
+import type { ScanProgress, ScanSettings, ScanStatus } from "@schemer/domain";
 import type { JsonLdExtractionResult } from "@schemer/extractor";
 import type { Repositories } from "@schemer/storage";
 
@@ -73,8 +73,8 @@ export class ScanManager {
   cancel(scanId: string): void {
     this.canceledRuns.add(scanId);
     this.dependencies.repositories.updateScanProgress(scanId, {
-      status: "canceled",
       ...this.currentProgress(scanId),
+      status: "canceled",
     });
     this.publish(scanId, "scan_state");
   }
@@ -95,6 +95,7 @@ export class ScanManager {
     if (!scan || scan.id !== scanId) throw new Error(`Scan not found: ${scanId}`);
     return {
       scanId,
+      status: scan.status as ScanStatus,
       discovered: scan.discovered,
       queued: scan.queued,
       completed: scan.completed,
@@ -112,8 +113,8 @@ export class ScanManager {
   private async run(scanId: string, target: URL, input: ScanInput): Promise<void> {
     try {
       this.dependencies.repositories.updateScanProgress(scanId, {
-        status: "discovering",
         ...this.currentProgress(scanId),
+        status: "discovering",
       });
       this.publish(scanId, "scan_state");
       const discovery = await this.dependencies.discover(target, input.sitemapUrl);
@@ -125,8 +126,8 @@ export class ScanManager {
       );
       const sourceByUrl = new Map(discovery.urls.map((entry) => [entry.url, entry.source]));
       this.dependencies.repositories.updateScanProgress(scanId, {
-        status: "crawling",
         ...this.currentProgress(scanId),
+        status: "crawling",
         discovered: urls.length,
         queued: urls.length,
       });
@@ -144,8 +145,8 @@ export class ScanManager {
 
       if (this.canceledRuns.has(scanId)) {
         this.dependencies.repositories.updateScanProgress(scanId, {
-          status: "canceled",
           ...this.currentProgress(scanId),
+          status: "canceled",
         });
         this.publish(scanId, "scan_state");
         return;
@@ -153,15 +154,15 @@ export class ScanManager {
 
       const progress = this.currentProgress(scanId);
       this.dependencies.repositories.updateScanProgress(scanId, {
-        status: "completed",
         ...progress,
+        status: "completed",
       });
       this.publish(scanId, "scan_completed");
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       this.dependencies.repositories.updateScanProgress(scanId, {
-        status: "failed",
         ...this.currentProgress(scanId),
+        status: "failed",
         error: message,
       });
       this.publish(scanId, "scan_error", message);
@@ -227,8 +228,8 @@ export class ScanManager {
     }
     const progress = this.currentProgress(scanId);
     this.dependencies.repositories.updateScanProgress(scanId, {
-      status: this.canceledRuns.has(scanId) ? "canceled" : "crawling",
       ...progress,
+      status: this.canceledRuns.has(scanId) ? "canceled" : "crawling",
       completed: progress.completed + 1,
       successful: progress.successful + (status === "success" ? 1 : 0),
       failed: progress.failed + (status === "success" || status === "no_jsonld" ? 0 : 1),
