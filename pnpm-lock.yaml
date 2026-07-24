@@ -45,6 +45,12 @@ importers:
 
   packages/domain: {}
 
+  packages/exporters:
+    dependencies:
+      '@schemer/storage':
+        specifier: workspace:*
+        version: link:../storage
+
   packages/extractor:
     dependencies:
       cheerio:
