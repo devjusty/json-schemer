@@ -20,9 +20,7 @@ describe("robots rules", () => {
 
   it("merges rules from all groups matching the most specific agent", () => {
     const rules = parseRobots(
-      ["User-agent: json-schemer", "Disallow: /first", "", "User-agent: json-schemer", "Disallow: /second"].join(
-        "\n",
-      ),
+      ["User-agent: json-schemer", "Disallow: /first", "", "User-agent: json-schemer", "Disallow: /second"].join("\n"),
       "json-schemer",
     );
 
