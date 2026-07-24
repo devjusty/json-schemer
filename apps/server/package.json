@@ -1,0 +1,17 @@
+{
+  "name": "@schemer/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@schemer/crawler": "workspace:*",
+    "@schemer/domain": "workspace:*",
+    "@schemer/exporters": "workspace:*",
+    "@schemer/extractor": "workspace:*",
+    "@schemer/storage": "workspace:*",
+    "fastify": "^5.6.1"
+  }
+}
