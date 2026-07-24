@@ -15,6 +15,12 @@ test("starts scan and exposes whole-site exports", async ({ page }) => {
   await page.route("**/api/scans/scan-1/pages", async (route) => {
     await route.fulfill({ contentType: "application/json", body: "[]" });
   });
+  await page.route("**/api/scans/scan-1/cancel", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ id: "scan-1", targetUrl: "https://example.com", status: "canceled" }),
+    });
+  });
   await page.route("**/api/scans/scan-1/events", async (route) => {
     await route.fulfill({
       contentType: "text/event-stream",
@@ -28,6 +34,9 @@ test("starts scan and exposes whole-site exports", async ({ page }) => {
   await page.getByRole("button", { name: "Start scan" }).click();
 
   await expect(page.getByText("Scan queued")).toBeVisible();
+  await expect(page.locator(".export-disabled").first()).toBeVisible();
+  await page.getByRole("button", { name: "Cancel" }).click();
+  await expect(page.getByText("Partial results")).toBeVisible();
   await expect(page.getByRole("link", { name: "Whole-site JSON" })).toHaveAttribute(
     "href",
     "/api/scans/scan-1/export/json",

@@ -41,4 +41,50 @@ describe("scan manager", () => {
     ).toEqual(["http_error", "success"]);
     expect(repositories.getSiteExportData("scan-1").pages[0].blocks).toHaveLength(1);
   });
+
+  it("stops claiming pages after cancellation and preserves canceled status", async () => {
+    const repositories = createRepositories(createDatabase(":memory:"));
+    let releaseFirstPage!: () => void;
+    let firstPageStarted!: () => void;
+    const firstPageReady = new Promise<void>((resolve) => {
+      firstPageStarted = resolve;
+    });
+    const firstPageRelease = new Promise<void>((resolve) => {
+      releaseFirstPage = resolve;
+    });
+    const fetchedUrls: string[] = [];
+    const manager = new ScanManager({
+      repositories,
+      discover: async () => ({
+        urls: [
+          { url: "https://example.com/a", source: "https://example.com/sitemap.xml" },
+          { url: "https://example.com/b", source: "https://example.com/sitemap.xml" },
+          { url: "https://example.com/c", source: "https://example.com/sitemap.xml" },
+        ],
+        errors: [],
+      }),
+      fetchPage: async (url) => {
+        fetchedUrls.push(url);
+        if (url.endsWith("/a")) {
+          firstPageStarted();
+          await firstPageRelease;
+        }
+        return { status: "ok", httpStatus: 200, contentType: "text/html", body: "<html></html>", durationMs: 2 };
+      },
+      extract: extractJsonLd,
+    });
+
+    await manager.start({
+      targetUrl: "https://example.com",
+      sitemapUrl: null,
+      settings: { ...DEFAULT_SCAN_SETTINGS, concurrency: 1 },
+    });
+    await firstPageReady;
+    manager.cancel("scan-1");
+    releaseFirstPage();
+    await manager.waitForIdle();
+
+    expect(fetchedUrls).toEqual(["https://example.com/a"]);
+    expect(repositories.getActiveScan()).toMatchObject({ status: "canceled", completed: 1 });
+  });
 });

@@ -45,6 +45,7 @@ function statusFor(result: FetchResult): "http_error" | "fetch_error" {
 export class ScanManager {
   private readonly listeners = new Map<string, Set<Listener>>();
   private readonly activeRuns = new Map<string, Promise<void>>();
+  private readonly canceledRuns = new Set<string>();
   private sequence = 0;
 
   constructor(private readonly dependencies: ScanDependencies) {}
@@ -70,10 +71,12 @@ export class ScanManager {
   }
 
   cancel(scanId: string): void {
+    this.canceledRuns.add(scanId);
     this.dependencies.repositories.updateScanProgress(scanId, {
       status: "canceled",
       ...this.currentProgress(scanId),
     });
+    this.publish(scanId, "scan_state");
   }
 
   subscribe(scanId: string, listener: Listener): () => void {
@@ -114,6 +117,7 @@ export class ScanManager {
       });
       this.publish(scanId, "scan_state");
       const discovery = await this.dependencies.discover(target, input.sitemapUrl);
+      if (this.canceledRuns.has(scanId)) return;
       const urls = filterSitemapUrls(
         discovery.urls.map((entry) => entry.url),
         target,
@@ -130,13 +134,22 @@ export class ScanManager {
 
       let nextIndex = 0;
       const worker = async (): Promise<void> => {
-        while (nextIndex < urls.length) {
+        while (!this.canceledRuns.has(scanId) && nextIndex < urls.length) {
           const index = nextIndex++;
           const url = urls[index];
           await this.processPage(scanId, url, sourceByUrl.get(url) ?? null, input.settings);
         }
       };
       await Promise.all(Array.from({ length: Math.min(input.settings.concurrency, urls.length || 1) }, worker));
+
+      if (this.canceledRuns.has(scanId)) {
+        this.dependencies.repositories.updateScanProgress(scanId, {
+          status: "canceled",
+          ...this.currentProgress(scanId),
+        });
+        this.publish(scanId, "scan_state");
+        return;
+      }
 
       const progress = this.currentProgress(scanId);
       this.dependencies.repositories.updateScanProgress(scanId, {
@@ -214,7 +227,7 @@ export class ScanManager {
     }
     const progress = this.currentProgress(scanId);
     this.dependencies.repositories.updateScanProgress(scanId, {
-      status: "crawling",
+      status: this.canceledRuns.has(scanId) ? "canceled" : "crawling",
       ...progress,
       completed: progress.completed + 1,
       successful: progress.successful + (status === "success" ? 1 : 0),

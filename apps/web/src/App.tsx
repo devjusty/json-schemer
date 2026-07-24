@@ -25,6 +25,8 @@ export function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const exportsReady = scan ? ["completed", "canceled", "failed"].includes(scan.status) : false;
+  const partial = scan ? scan.status !== "completed" : false;
 
   useEffect(() => {
     void getActiveScan()
@@ -110,17 +112,24 @@ export function App() {
           <ProgressPanel scan={scan} />
           <nav className="export-bar" aria-label="Whole-site exports">
             <span>Export site</span>
-            {(["json", "markdown", "csv"] as const).map((format) => (
-              <a
-                key={format}
-                href={`/api/scans/${scan.id}/export/${format}`}
-                aria-label={`Whole-site ${format === "markdown" ? "Markdown" : format.toUpperCase()}`}
-              >
-                {format.toUpperCase()}
-              </a>
-            ))}
+            {partial && <span className="partial-label">Partial results</span>}
+            {(["json", "markdown", "csv"] as const).map((format) =>
+              exportsReady ? (
+                <a
+                  key={format}
+                  href={`/api/scans/${scan.id}/export/${format}`}
+                  aria-label={`Whole-site ${format === "markdown" ? "Markdown" : format.toUpperCase()}`}
+                >
+                  {format.toUpperCase()}
+                </a>
+              ) : (
+                <span key={format} className="export-disabled" aria-disabled="true" title="Available when scan stops">
+                  {format.toUpperCase()}
+                </span>
+              ),
+            )}
             {!["completed", "failed", "canceled"].includes(scan.status) && (
-              <button type="button" onClick={() => void cancelScan(scan.id)}>
+              <button type="button" onClick={() => void cancelScan(scan.id).then(setScan)}>
                 Cancel
               </button>
             )}
@@ -130,7 +139,7 @@ export function App() {
               <PageTable pages={pages} selectedId={selectedId} onSelect={(id) => void selectPage(id)} />
             </div>
             {detail ? (
-              <PageDetail detail={detail} scanId={scan.id} />
+              <PageDetail detail={detail} scanId={scan.id} scanStatus={scan.status} />
             ) : (
               <div className="empty-panel detail-empty">Select page to inspect raw blocks.</div>
             )}

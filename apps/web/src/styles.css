@@ -170,6 +170,20 @@ button:disabled {
   padding: 8px 11px;
   font-size: 0.7rem;
 }
+.export-disabled {
+  border: 1px solid #4a5b4a;
+  color: #667366;
+  padding: 8px 11px;
+  cursor: not-allowed;
+  font-size: 0.7rem;
+}
+.partial-label {
+  color: #e0bd76;
+  font:
+    0.68rem ui-monospace,
+    monospace;
+  text-transform: uppercase;
+}
 .export-bar button {
   margin-left: auto;
   border-color: #81564e;

@@ -10,7 +10,7 @@ vi.mock("../src/api", () => ({
   listPages: vi.fn(async () => []),
   getPageDetail: vi.fn(),
   subscribeToScan: vi.fn(() => () => undefined),
-  cancelScan: vi.fn(),
+  cancelScan: vi.fn(async () => ({ id: "scan-1", targetUrl: "https://example.com", status: "canceled" })),
 }));
 
 afterEach(cleanup);
@@ -25,6 +25,9 @@ describe("scanner app", () => {
     fireEvent.click(screen.getByRole("button", { name: "Start scan" }));
 
     expect(await screen.findByText("Scan queued")).toBeInTheDocument();
+    expect(screen.getByText("JSON", { selector: ".export-disabled" })).toHaveAttribute("aria-disabled", "true");
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(await screen.findByText("canceled")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Whole-site JSON" })).toHaveAttribute(
       "href",
       "/api/scans/scan-1/export/json",

@@ -1,6 +1,16 @@
 import type { PageDetail as PageDetailData } from "../api";
 
-export function PageDetail({ detail, scanId }: { detail: PageDetailData; scanId: string }) {
+export function PageDetail({
+  detail,
+  scanId,
+  scanStatus,
+}: {
+  detail: PageDetailData;
+  scanId: string;
+  scanStatus: string;
+}) {
+  const exportsReady = ["completed", "canceled", "failed"].includes(scanStatus);
+  const partial = scanStatus !== "completed";
   return (
     <aside className="detail-panel">
       <span className="eyebrow">Page detail</span>
@@ -9,11 +19,18 @@ export function PageDetail({ detail, scanId }: { detail: PageDetailData; scanId:
         {detail.page.status} · {detail.blocks.length} JSON-LD blocks
       </p>
       <div className="page-exports">
-        {(["json", "markdown", "csv"] as const).map((format) => (
-          <a key={format} href={`/api/scans/${scanId}/pages/${detail.page.id}/export/${format}`}>
-            Page {format.toUpperCase()}
-          </a>
-        ))}
+        {partial && <span className="partial-label">Partial results</span>}
+        {(["json", "markdown", "csv"] as const).map((format) =>
+          exportsReady ? (
+            <a key={format} href={`/api/scans/${scanId}/pages/${detail.page.id}/export/${format}`}>
+              Page {format.toUpperCase()}
+            </a>
+          ) : (
+            <span key={format} className="export-disabled" aria-disabled="true" title="Available when scan stops">
+              Page {format.toUpperCase()}
+            </span>
+          ),
+        )}
       </div>
       {detail.blocks.map((block) => (
         <details key={block.id} open>

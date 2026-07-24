@@ -45,6 +45,10 @@ function formatExport(format: ExportFormat, data: Parameters<typeof serializeJso
   return serializeCsv(data);
 }
 
+function isTerminalScan(status: string): boolean {
+  return ["completed", "canceled", "failed"].includes(status);
+}
+
 export async function createApp(dependencies: AppDependencies): Promise<FastifyInstance> {
   const app = Fastify({ logger: false });
 
@@ -138,7 +142,9 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
         return reply.code(400).send({ error: "Unsupported export format" });
       try {
         const format = request.params.format as ExportFormat;
-        const body = formatExport(format, dependencies.repositories.getSiteExportData(request.params.scanId));
+        const data = dependencies.repositories.getSiteExportData(request.params.scanId);
+        if (!isTerminalScan(data.scan.status)) return reply.code(409).send({ error: "Scan is still active" });
+        const body = formatExport(format, data);
         return reply
           .header("content-type", formatContentType(format))
           .header("content-disposition", `attachment; filename=scan.${format === "markdown" ? "md" : format}`)
@@ -156,10 +162,9 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
         return reply.code(400).send({ error: "Unsupported export format" });
       try {
         const format = request.params.format as ExportFormat;
-        const body = formatExport(
-          format,
-          dependencies.repositories.getPageExportData(request.params.scanId, request.params.pageId),
-        );
+        const data = dependencies.repositories.getPageExportData(request.params.scanId, request.params.pageId);
+        if (!isTerminalScan(data.scan.status)) return reply.code(409).send({ error: "Scan is still active" });
+        const body = formatExport(format, data);
         return reply
           .header("content-type", formatContentType(format))
           .header("content-disposition", `attachment; filename=page.${format === "markdown" ? "md" : format}`)
