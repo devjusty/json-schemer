@@ -16,7 +16,7 @@ export async function discoverSitemaps(
 
   try {
     const robotsUrl = new URL("/robots.txt", siteUrl);
-    const robots = parseRobots(await fetchText(robotsUrl, maxRedirects), "jason-schemer");
+    const robots = parseRobots(await fetchText(robotsUrl, maxRedirects), "json-schemer");
     queue.push(...robots.sitemaps);
   } catch (error) {
     errors.push({

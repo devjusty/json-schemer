@@ -1,4 +1,4 @@
-# Jason Schemer Export Contract
+# JSON Schemer Export Contract
 
 Use this reference when auditing exports from `packages/exporters`. Treat it as
 the project contract, not as a generic Schema.org validator.

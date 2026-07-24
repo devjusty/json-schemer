@@ -7,12 +7,12 @@ describe("robots rules", () => {
       [
         "User-agent: *",
         "Disallow: /",
-        "User-agent: jason",
+        "User-agent: json",
         "Disallow: /private",
-        "User-agent: jason-schemer",
+        "User-agent: json-schemer",
         "Allow: /",
       ].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/private/item"))).toBe(true);
@@ -20,10 +20,10 @@ describe("robots rules", () => {
 
   it("merges rules from all groups matching the most specific agent", () => {
     const rules = parseRobots(
-      ["User-agent: jason-schemer", "Disallow: /first", "", "User-agent: jason-schemer", "Disallow: /second"].join(
+      ["User-agent: json-schemer", "Disallow: /first", "", "User-agent: json-schemer", "Disallow: /second"].join(
         "\n",
       ),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/first"))).toBe(false);
@@ -32,7 +32,7 @@ describe("robots rules", () => {
 
   it("ends an agent group at a blank line", () => {
     const rules = parseRobots(
-      ["User-agent: crawler", "", "User-agent: jason-schemer", "Disallow: /private", "User-agent: *", "Allow: /"].join(
+      ["User-agent: crawler", "", "User-agent: json-schemer", "Disallow: /private", "User-agent: *", "Allow: /"].join(
         "\n",
       ),
       "crawler",
@@ -44,7 +44,7 @@ describe("robots rules", () => {
   it("uses wildcard rules when no specific group matches", () => {
     const rules = parseRobots(
       ["User-agent: other", "Disallow: /private", "User-agent: *", "Disallow: /admin"].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/admin"))).toBe(false);
@@ -54,7 +54,7 @@ describe("robots rules", () => {
   it("merges rules from repeated wildcard groups", () => {
     const rules = parseRobots(
       ["User-agent: *", "Disallow: /first", "", "User-agent: *", "Disallow: /second"].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/first"))).toBe(false);
@@ -65,13 +65,13 @@ describe("robots rules", () => {
     const rules = parseRobots(
       [
         "  User-agent: crawler # shared group",
-        "User-agent: jason-schemer",
+        "User-agent: json-schemer",
         " Disallow: /private  # hidden",
         "",
         " User-agent: *",
         " Allow: /",
       ].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/private"))).toBe(false);
@@ -86,7 +86,7 @@ describe("robots rules", () => {
         "Sitemap:",
         "User-agent: *",
       ].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.sitemaps).toEqual(["https://example.com/sitemap.xml"]);
@@ -95,7 +95,7 @@ describe("robots rules", () => {
   it("ignores empty directives and malformed lines", () => {
     const rules = parseRobots(
       ["User-agent:", "Disallow:", "Allow:", "not a directive", ":", "User-agent: *", "Allow: /public"].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/private"))).toBe(true);
@@ -105,21 +105,21 @@ describe("robots rules", () => {
   it("does not let an empty user-agent override wildcard rules", () => {
     const rules = parseRobots(
       ["User-agent:", "Disallow: /blocked", "User-agent: *", "Allow: /"].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/blocked"))).toBe(true);
   });
 
   it("allows all URLs when robots text is unavailable", () => {
-    const rules = parseRobots("", "jason-schemer");
+    const rules = parseRobots("", "json-schemer");
     expect(rules.isAllowed(new URL("https://example.com/anything"))).toBe(true);
   });
 
   it("uses longest matching path with allow precedence", () => {
     const rules = parseRobots(
       ["User-agent: *", "Disallow: /private", "Allow: /private/public", "Disallow: /private/public/secret"].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/private/item"))).toBe(false);
@@ -136,7 +136,7 @@ describe("robots rules", () => {
         "Allow: /blocked-second",
         "Disallow: /blocked-second",
       ].join("\n"),
-      "jason-schemer",
+      "json-schemer",
     );
 
     expect(rules.isAllowed(new URL("https://example.com/blocked-first"))).toBe(true);

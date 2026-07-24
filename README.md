@@ -1,8 +1,8 @@
-# Jason Schemer
+# JSON Schemer
 
 Local sitemap scanner for JSON-LD structured data. Scan a website and export information about its schemas so humans or agents can audit and improve them.
 
-Jason Schemer discovers sitemap URLs, fetches pages, extracts JSON-LD blocks and Schema.org entities, and presents page-level results in a local web UI.
+JSON Schemer discovers sitemap URLs, fetches pages, extracts JSON-LD blocks and Schema.org entities, and presents page-level results in a local web UI.
 
 ## Features
 
@@ -42,11 +42,11 @@ Canceling a scan preserves partial results and makes exports available for the c
 
 ## Export Audit Skill
 
-Agents can review Jason Schemer exports with the `json-schema-export-audit` skill.
+Agents can review JSON Schemer exports with the `json-schema-export-audit` skill.
 Install the skill collection directly from this repository with:
 
 ```bash
-npx skills add devjusty/jason-schemer
+npx skills add devjusty/json-schemer
 ```
 
 The canonical skill definition lives at `skills/json-schema-export-audit/`.

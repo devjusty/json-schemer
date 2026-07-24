@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Audit the supplied matching Jason Schemer JSON, CSV, and Markdown exports for https://example.com. Check page URLs, block ordinals, parse statuses, and entity rows across formats. Produce the required findings-first Markdown report; if no defects are evidenced, say so and list representation limits.",
+      "prompt": "Audit the supplied matching JSON Schemer JSON, CSV, and Markdown exports for https://example.com. Check page URLs, block ordinals, parse statuses, and entity rows across formats. Produce the required findings-first Markdown report; if no defects are evidenced, say so and list representation limits.",
       "expected_output": "A findings-first Markdown audit that identifies the three artifacts, reports no unsupported defect when values match, and states that CSV/Markdown do not preserve all JSON metadata.",
       "files": []
     },

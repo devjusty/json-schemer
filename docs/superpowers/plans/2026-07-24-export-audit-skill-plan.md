@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Create a project-specific agent skill that audits Jason Schemer JSON, CSV, and Markdown exports for data integrity and JSON-LD/schema quality.
+**Goal:** Create a project-specific agent skill that audits JSON Schemer JSON, CSV, and Markdown exports for data integrity and JSON-LD/schema quality.
 
 **Architecture:** Keep the local skill instructions in `.agents/skills/json-schema-export-audit/SKILL.md` and publish the same collection under `skills/json-schema-export-audit/`. Place exact export shapes and invariants in `references/export-contract.md` for progressive disclosure. Add `evals/evals.json` with realistic prompts and expected outcomes, but defer model runs until the user confirms the test set.
 
@@ -34,7 +34,7 @@ List checks that are valid only when artifacts share a scan: target URL, page UR
 
 - [ ] **Step 1: Add frontmatter and pushy trigger description**
 
-Use skill name `json-schema-export-audit`. Trigger on requests to inspect, validate, QA, review, or audit Jason Schemer exports or scan artifacts, including JSON, CSV, Markdown, JSON-LD, sitemap, and schema-quality wording.
+Use skill name `json-schema-export-audit`. Trigger on requests to inspect, validate, QA, review, or audit JSON Schemer exports or scan artifacts, including JSON, CSV, Markdown, JSON-LD, sitemap, and schema-quality wording.
 
 - [ ] **Step 2: Add evidence-first audit workflow**
 

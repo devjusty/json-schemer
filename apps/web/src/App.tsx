@@ -14,7 +14,7 @@ export function App() {
       <header className="masthead">
         <div>
           <span className="eyebrow">LOCAL CRAWLER / STRUCTURED DATA</span>
-          <h1>Jason Schemer</h1>
+          <h1>JSON Schemer</h1>
           <p>Scan sitemap pages. See every JSON-LD block. Export clean evidence for review.</p>
         </div>
         <div className="mark">JS</div>

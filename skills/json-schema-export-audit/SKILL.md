@@ -1,11 +1,11 @@
 ---
 name: json-schema-export-audit
-description: Audit Jason Schemer exports and scan artifacts for data integrity and JSON-LD/Schema.org quality. Use whenever a user asks to review, validate, inspect, QA, compare, or audit exported JSON, CSV, Markdown, JSON-LD, sitemap-scan, or schema results from this project, even if they do not use the word export.
+description: Audit JSON Schemer exports and scan artifacts for data integrity and JSON-LD/Schema.org quality. Use whenever a user asks to review, validate, inspect, QA, compare, or audit exported JSON, CSV, Markdown, JSON-LD, sitemap-scan, or schema results from this project, even if they do not use the word export.
 ---
 
 # Export Audit
 
-Audit supplied Jason Schemer artifacts. Focus on evidence, not assumptions:
+Audit supplied JSON Schemer artifacts. Focus on evidence, not assumptions:
 determine what each artifact contains, validate what can be validated, and mark
 unavailable checks explicitly.
 

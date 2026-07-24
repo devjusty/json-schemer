@@ -31,7 +31,7 @@ async function main(): Promise<void> {
   const app = await createApp({ repositories, manager });
   const port = Number(process.env.PORT ?? 4317);
   await app.listen({ host: "127.0.0.1", port });
-  console.log(`Jason Schemer listening at http://127.0.0.1:${port}`);
+  console.log(`JSON Schemer listening at http://127.0.0.1:${port}`);
 }
 
 main().catch((error) => {

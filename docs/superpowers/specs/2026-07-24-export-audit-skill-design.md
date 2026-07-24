@@ -3,14 +3,14 @@
 ## Goal
 
 Create an agent skill that audits JSON, CSV, and Markdown exports produced by
-Jason Schemer. It must assess both export/data integrity and JSON-LD/schema
+JSON Schemer. It must assess both export/data integrity and JSON-LD/schema
 quality, without modifying source data or silently treating missing evidence as
 failure.
 
 ## Trigger
 
 Trigger when a user asks an agent to review, validate, inspect, QA, or audit a
-Jason Schemer export or exported scan artifact. Trigger for JSON, CSV, or
+JSON Schemer export or exported scan artifact. Trigger for JSON, CSV, or
 Markdown files, including requests that do not explicitly say “export” when
 the artifact clearly contains scan/page/JSON-LD data.
 

@@ -11,11 +11,11 @@
 
 ## Export Audit Skill
 
-- `json-schema-export-audit` reviews Jason Schemer JSON, CSV, and Markdown exports for export integrity and JSON-LD/Schema.org quality.
+- `json-schema-export-audit` reviews JSON Schemer JSON, CSV, and Markdown exports for export integrity and JSON-LD/Schema.org quality.
 - It uses `skills/json-schema-export-audit/references/export-contract.md` for project-specific export shapes and invariants.
 - Reports must be findings-first Markdown with severity, category, location, evidence, impact, recommendation, and coverage limits.
 - Keep export/data defects separate from schema/site observations; never claim rich-result eligibility from exports alone.
-- Install public skill collection with `npx skills add devjusty/jason-schemer`.
+- Install public skill collection with `npx skills add devjusty/json-schemer`.
 
 ## Commands
 
