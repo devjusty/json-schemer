@@ -31,6 +31,12 @@
       "skillPath": "skills/seo-schema/SKILL.md",
       "computedHash": "55b23f4a6ddf6254753096b57cf8bcf531439b6d0cac4f56de2d59e24cb90ed3"
     },
+    "skill-creator": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/skill-creator/SKILL.md",
+      "computedHash": "5ea13a6d9f0d4bb694405d79acd00cadec0d21bb138c4dd10fcf3c500cb835c2"
+    },
     "typescript-expert": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",

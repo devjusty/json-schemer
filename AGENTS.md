@@ -6,7 +6,16 @@
 - `apps/server` is the Fastify API and scan runtime; `apps/web` is the Vite/React UI.
 - `packages/crawler` handles sitemap discovery, robots rules, fetching, and URL safety.
 - `packages/extractor` parses JSON-LD; `packages/storage` owns SQLite schema/repositories; `packages/domain` owns shared types/default settings; `packages/exporters` serializes scan data.
+- Public agent skill lives at `skills/json-schema-export-audit/`; local discovery path `.agents/skills/json-schema-export-audit` is a symlink to it. Edit only the canonical `skills/` copy.
 - Workspace package entrypoints are each package's `src/index.ts`; server entrypoint is `apps/server/src/main.ts`; web entrypoint is `apps/web/src/main.tsx`.
+
+## Export Audit Skill
+
+- `json-schema-export-audit` reviews Jason Schemer JSON, CSV, and Markdown exports for export integrity and JSON-LD/Schema.org quality.
+- It uses `skills/json-schema-export-audit/references/export-contract.md` for project-specific export shapes and invariants.
+- Reports must be findings-first Markdown with severity, category, location, evidence, impact, recommendation, and coverage limits.
+- Keep export/data defects separate from schema/site observations; never claim rich-result eligibility from exports alone.
+- Install public skill collection with `npx skills add devjusty/jason-schemer`.
 
 ## Commands
 

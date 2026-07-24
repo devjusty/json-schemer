@@ -1,0 +1,23 @@
+{
+  "skill_name": "json-schema-export-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Audit the supplied matching Jason Schemer JSON, CSV, and Markdown exports for https://example.com. Check page URLs, block ordinals, parse statuses, and entity rows across formats. Produce the required findings-first Markdown report; if no defects are evidenced, say so and list representation limits.",
+      "expected_output": "A findings-first Markdown audit that identifies the three artifacts, reports no unsupported defect when values match, and states that CSV/Markdown do not preserve all JSON metadata.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Review this exported scan bundle. The JSON file fails to parse near the end, the CSV has one row with an unquoted comma in serialized_json, and a page entity references block-99 although that page only contains blocks 0 and 1. Audit the artifacts without editing them. Rank findings, cite exact locations/evidence, explain impact, and distinguish exporter corruption from missing evidence.",
+      "expected_output": "A severity-ranked report with separate malformed JSON, malformed CSV row-shape/quoting, and orphan entity findings, each with evidence, impact, recommendation, and explicit coverage limits caused by parse failure.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Audit this valid JSON export from a product page. Its JSON-LD parses, but the entity has @type Product, an empty name, no image, and an Offer with no price or availability. The export also records one failed page elsewhere in the scan. Report export/data defects separately from schema/site observations, avoid claiming Google eligibility, and recommend concrete next checks.",
+      "expected_output": "A report that treats valid syntax as distinct from schema quality, flags empty/incomplete product data at an appropriate severity, reports the failed page separately, and states that rich-result eligibility cannot be established from the export alone.",
+      "files": []
+    }
+  ]
+}

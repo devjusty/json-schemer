@@ -40,6 +40,21 @@ SQLite data lives at `.data/scan.db`. Starting a scan replaces previous scan dat
 
 Canceling a scan preserves partial results and makes exports available for the completed portion. Starting another scan replaces the active scan and its stored results.
 
+## Export Audit Skill
+
+Agents can review Jason Schemer exports with the `json-schema-export-audit` skill.
+Install the skill collection directly from this repository with:
+
+```bash
+npx skills add devjusty/jason-schemer
+```
+
+The canonical skill definition lives at `skills/json-schema-export-audit/`.
+The local `.agents/skills/json-schema-export-audit` path is a symlink to that
+directory, so local and public copies stay synchronized. The skill audits JSON,
+CSV, and Markdown exports for data integrity and JSON-LD/Schema.org quality,
+then produces an evidence-first Markdown report.
+
 ## Safety And Limits
 
 The crawler only accepts HTTP(S) targets and rejects targets that resolve to loopback, private, link-local, unique-local, unspecified, or carrier-grade NAT networks. It does not execute JavaScript from downloaded pages.
