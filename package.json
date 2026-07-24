@@ -7,7 +7,9 @@
     "test:ui": "vitest run apps/web/test",
     "typecheck": "tsc --noEmit",
     "build": "pnpm -r build",
-    "dev": "pnpm --filter @schemer/server dev"
+    "dev": "concurrently -k \"pnpm --filter @schemer/server dev\" \"pnpm --filter @schemer/web dev\"",
+    "test:e2e": "playwright test",
+    "verify": "pnpm test && pnpm typecheck && pnpm build && pnpm test:e2e"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
@@ -19,7 +21,9 @@
     "@vitejs/plugin-react": "^4.7.0",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
-    "jsdom": "^26.1.0"
+    "jsdom": "^26.1.0",
+    "@playwright/test": "^1.55.0",
+    "concurrently": "^9.2.1"
   },
   "dependencies": {
     "cheerio": "^1.1.2",
