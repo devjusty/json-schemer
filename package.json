@@ -12,24 +12,26 @@
     "verify": "pnpm test && pnpm typecheck && pnpm build && pnpm test:e2e"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.5",
+    "@playwright/test": "^1.55.0",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.1",
+    "fallow": "^3.9.1",
+    "jsdom": "^26.1.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.0",
-    "vitest": "^3.2.4",
-    "@vitejs/plugin-react": "^4.7.0",
-    "@testing-library/jest-dom": "^6.8.0",
-    "@testing-library/react": "^16.3.0",
-    "jsdom": "^26.1.0",
-    "@playwright/test": "^1.55.0",
-    "concurrently": "^9.2.1"
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "cheerio": "^1.1.2",
     "fast-xml-parser": "^5.2.5",
-    "ipaddr.js": "^2.2.0",
     "fastify": "^5.6.1",
+    "ipaddr.js": "^2.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
