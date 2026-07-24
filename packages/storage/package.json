@@ -1,0 +1,11 @@
+{
+  "name": "@schemer/storage",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@schemer/domain": "workspace:*"
+  }
+}
