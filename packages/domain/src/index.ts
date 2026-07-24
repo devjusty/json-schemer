@@ -21,7 +21,16 @@ export const DEFAULT_SCAN_SETTINGS = {
   sameOriginOnly: true,
 } as const;
 
-export type ScanSettings = typeof DEFAULT_SCAN_SETTINGS;
+export interface ScanSettings {
+  maxUrls: number;
+  concurrency: number;
+  delayMs: number;
+  timeoutMs: number;
+  maxResponseBytes: number;
+  maxRedirects: number;
+  respectRobots: boolean;
+  sameOriginOnly: boolean;
+}
 export type ScanStatus =
   | "queued"
   | "discovering"
