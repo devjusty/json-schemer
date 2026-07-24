@@ -9,6 +9,8 @@
     "skipLibCheck": true,
     "noEmit": true,
     "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"]
   }
 }
