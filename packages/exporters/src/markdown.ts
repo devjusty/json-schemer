@@ -21,7 +21,14 @@ function renderPage(detail: PageDetail): string {
   ];
   if (detail.page.error) lines.push(`- Error: ${escapeCell(detail.page.error)}`);
   for (const block of detail.blocks) {
-    lines.push("", `### JSON-LD block ${block.ordinal}`, "", block.parseError ? `Parse error: ${escapeCell(block.parseError)}` : "Valid JSON-LD", "", rawFence(block.rawText));
+    lines.push(
+      "",
+      `### JSON-LD block ${block.ordinal}`,
+      "",
+      block.parseError ? `Parse error: ${escapeCell(block.parseError)}` : "Valid JSON-LD",
+      "",
+      rawFence(block.rawText),
+    );
   }
   return lines.join("\n");
 }

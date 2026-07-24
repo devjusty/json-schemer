@@ -31,13 +31,7 @@ export interface ScanSettings {
   respectRobots: boolean;
   sameOriginOnly: boolean;
 }
-export type ScanStatus =
-  | "queued"
-  | "discovering"
-  | "crawling"
-  | "completed"
-  | "failed"
-  | "canceled";
+export type ScanStatus = "queued" | "discovering" | "crawling" | "completed" | "failed" | "canceled";
 export type ExportFormat = "json" | "markdown" | "csv";
 export type ExportScope = "site" | "page";
 

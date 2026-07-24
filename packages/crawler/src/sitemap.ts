@@ -8,9 +8,7 @@ const parser = new XMLParser({
   isArray: (name) => name === "url" || name === "sitemap",
 });
 
-export type SitemapDocument =
-  | { kind: "urlset"; urls: string[] }
-  | { kind: "index"; sitemaps: string[] };
+export type SitemapDocument = { kind: "urlset"; urls: string[] } | { kind: "index"; sitemaps: string[] };
 
 export interface DiscoveredSitemapUrl {
   url: string;
@@ -57,21 +55,22 @@ export async function discoverSitemaps(
   const errors: DiscoveryResult["errors"] = [];
   const discovered: DiscoveredSitemapUrl[] = [];
   const visited = new Set<string>();
-  const queue: string[] = [
-    `${siteUrl.origin}/sitemap.xml`,
-    `${siteUrl.origin}/sitemap_index.xml`,
-  ];
+  const queue: string[] = [`${siteUrl.origin}/sitemap.xml`, `${siteUrl.origin}/sitemap_index.xml`];
 
   try {
     const robotsUrl = new URL("/robots.txt", siteUrl);
     const robots = parseRobots(await fetchText(robotsUrl), "jason-schemer");
     queue.push(...robots.sitemaps);
   } catch (error) {
-    errors.push({ source: `${siteUrl.origin}/robots.txt`, message: error instanceof Error ? error.message : String(error) });
+    errors.push({
+      source: `${siteUrl.origin}/robots.txt`,
+      message: error instanceof Error ? error.message : String(error),
+    });
   }
 
   while (queue.length > 0) {
-    const source = queue.shift()!;
+    const source = queue.shift();
+    if (!source) break;
     if (visited.has(source)) continue;
     visited.add(source);
 

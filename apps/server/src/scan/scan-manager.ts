@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { FetchResult } from "@schemer/crawler";
 import { filterSitemapUrls } from "@schemer/crawler";
-import type { ScanSettings, ScanProgress } from "@schemer/domain";
+import type { ScanProgress, ScanSettings } from "@schemer/domain";
 import type { JsonLdExtractionResult } from "@schemer/extractor";
 import type { Repositories } from "@schemer/storage";
 
@@ -28,7 +28,7 @@ export interface ScanDependencies {
   extract: (html: string) => JsonLdExtractionResult;
 }
 
-export type ScanEvent =
+type ScanEvent =
   | { type: "scan_state"; progress: ScanProgress }
   | { type: "progress"; progress: ScanProgress }
   | { type: "page_completed"; progress: ScanProgress }
@@ -155,7 +155,12 @@ export class ScanManager {
     }
   }
 
-  private async processPage(scanId: string, url: string, sitemapSource: string | null, settings: ScanSettings): Promise<void> {
+  private async processPage(
+    scanId: string,
+    url: string,
+    sitemapSource: string | null,
+    settings: ScanSettings,
+  ): Promise<void> {
     const result = await this.dependencies.fetchPage(url, settings);
     let status: "success" | "no_jsonld" | "invalid_jsonld" | "http_error" | "parse_error" | "fetch_error";
     let extraction: JsonLdExtractionResult | null = null;

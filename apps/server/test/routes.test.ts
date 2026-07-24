@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { createDatabase, createRepositories } from "@schemer/storage";
+import { describe, expect, it } from "vitest";
 import { createApp } from "../src/http/routes";
 
 describe("HTTP routes", () => {

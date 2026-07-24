@@ -23,10 +23,7 @@ describe("sitemap parsing", () => {
   it("follows sitemap references from robots and records failures", async () => {
     const responses = new Map([
       ["https://example.com/robots.txt", "Sitemap: https://example.com/sitemap.xml"],
-      [
-        "https://example.com/sitemap.xml",
-        "<urlset><url><loc>https://example.com/a</loc></url></urlset>",
-      ],
+      ["https://example.com/sitemap.xml", "<urlset><url><loc>https://example.com/a</loc></url></urlset>"],
     ]);
     const result = await discoverSitemaps(new URL("https://example.com"), async (url) => {
       const value = responses.get(url.href);
@@ -35,9 +32,7 @@ describe("sitemap parsing", () => {
     });
 
     expect(result.urls).toEqual([{ url: "https://example.com/a", source: "https://example.com/sitemap.xml" }]);
-    expect(result.errors).toEqual([
-      { source: "https://example.com/sitemap_index.xml", message: "not found" },
-    ]);
+    expect(result.errors).toEqual([{ source: "https://example.com/sitemap_index.xml", message: "not found" }]);
   });
 
   it("rejects malformed XML", () => {

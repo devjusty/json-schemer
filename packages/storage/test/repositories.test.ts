@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import { DEFAULT_SCAN_SETTINGS } from "@schemer/domain";
+import { describe, expect, it } from "vitest";
 import { createDatabase } from "../src/database";
 import { createRepositories } from "../src/repositories";
 

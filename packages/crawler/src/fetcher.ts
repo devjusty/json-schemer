@@ -34,26 +34,56 @@ export async function fetchPage(
       if (response.status >= 300 && response.status < 400) {
         const location = response.headers.get("location");
         if (!location || redirect === settings.maxRedirects) {
-          return { status: "fetch_error", httpStatus: null, contentType: null, message: "Redirect limit exceeded", durationMs };
+          return {
+            status: "fetch_error",
+            httpStatus: null,
+            contentType: null,
+            message: "Redirect limit exceeded",
+            durationMs,
+          };
         }
         currentUrl = new URL(location, currentUrl).href;
         continue;
       }
 
       if (response.status >= 400) {
-        return { status: "http_error", httpStatus: response.status, contentType, message: `HTTP ${response.status}`, durationMs };
+        return {
+          status: "http_error",
+          httpStatus: response.status,
+          contentType,
+          message: `HTTP ${response.status}`,
+          durationMs,
+        };
       }
       if (!contentType.includes("html")) {
-        return { status: "not_html", httpStatus: response.status, contentType, message: "Response is not HTML", durationMs };
+        return {
+          status: "not_html",
+          httpStatus: response.status,
+          contentType,
+          message: "Response is not HTML",
+          durationMs,
+        };
       }
       const declaredLength = Number(response.headers.get("content-length"));
       if (Number.isFinite(declaredLength) && declaredLength > settings.maxResponseBytes) {
-        return { status: "too_large", httpStatus: response.status, contentType, message: "Response exceeds size limit", durationMs };
+        return {
+          status: "too_large",
+          httpStatus: response.status,
+          contentType,
+          message: "Response exceeds size limit",
+          durationMs,
+        };
       }
 
       const body = await response.text();
       if (new TextEncoder().encode(body).byteLength > settings.maxResponseBytes) {
-        return { status: "too_large", httpStatus: response.status, contentType, message: "Response exceeds size limit", durationMs };
+        return {
+          status: "too_large",
+          httpStatus: response.status,
+          contentType,
+          message: "Response exceeds size limit",
+          durationMs,
+        };
       }
       return { status: "ok", httpStatus: response.status, contentType, body, durationMs };
     }

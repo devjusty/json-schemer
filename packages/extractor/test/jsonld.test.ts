@@ -19,9 +19,7 @@ describe("JSON-LD extraction", () => {
   });
 
   it("keeps invalid raw blocks and reports parse errors", () => {
-    const result = extractJsonLd(
-      '<script type="application/ld+json">{"@context":"https://schema.org",</script>',
-    );
+    const result = extractJsonLd('<script type="application/ld+json">{"@context":"https://schema.org",</script>');
 
     expect(result.blocks[0].rawText).toContain("schema.org");
     expect(result.blocks[0].parsed).toBeNull();

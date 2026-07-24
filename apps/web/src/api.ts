@@ -32,7 +32,11 @@ async function request<T>(input: RequestInfo | URL, init?: RequestInit): Promise
 }
 
 export function createScan(input: { targetUrl: string; sitemapUrl: string | null }): Promise<Scan> {
-  return request<Scan>("/api/scans", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(input) });
+  return request<Scan>("/api/scans", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
 }
 
 export function getActiveScan(): Promise<Scan | null> {
@@ -51,7 +55,10 @@ export function cancelScan(scanId: string): Promise<Scan> {
   return request<Scan>(`/api/scans/${encodeURIComponent(scanId)}/cancel`, { method: "POST" });
 }
 
-export function subscribeToScan(scanId: string, onEvent: (event: { type: string; progress?: Partial<Scan> }) => void): () => void {
+export function subscribeToScan(
+  scanId: string,
+  onEvent: (event: { type: string; progress?: Partial<Scan> }) => void,
+): () => void {
   const source = new EventSource(`/api/scans/${encodeURIComponent(scanId)}/events`);
   source.onmessage = (message) => onEvent(JSON.parse(message.data) as { type: string; progress?: Partial<Scan> });
   return () => source.close();

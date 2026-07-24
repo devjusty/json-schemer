@@ -9,7 +9,16 @@
     "build": "pnpm -r build",
     "dev": "concurrently -k \"pnpm --filter @schemer/server dev\" \"pnpm --filter @schemer/web dev\"",
     "test:e2e": "playwright test",
-    "verify": "pnpm test && pnpm typecheck && pnpm build && pnpm test:e2e"
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome lint .",
+    "check": "biome check .",
+    "check:ci": "biome ci .",
+    "fallow": "fallow --format json --quiet",
+    "fallow:audit": "fallow audit --base main",
+    "fallow:review": "fallow audit --base main --brief",
+    "quality": "pnpm check:ci && pnpm typecheck && pnpm test",
+    "verify": "pnpm quality && pnpm build && pnpm test:e2e"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",

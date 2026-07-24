@@ -1,6 +1,6 @@
 import { createServer, type RequestListener, type Server } from "node:http";
-import { afterEach, describe, expect, it } from "vitest";
 import { DEFAULT_SCAN_SETTINGS } from "@schemer/domain";
+import { afterEach, describe, expect, it } from "vitest";
 import { fetchPage } from "../src/fetcher";
 
 let server: Server | undefined;
@@ -11,12 +11,15 @@ afterEach(async () => {
 });
 
 function startServer(handler: RequestListener): Promise<string> {
-  server = createServer(handler);
-  return new Promise((resolve) => server!.listen(0, "127.0.0.1", () => {
-    const address = server!.address();
-    if (!address || typeof address === "string") throw new Error("server did not start");
-    resolve(`http://127.0.0.1:${address.port}`);
-  }));
+  const currentServer = createServer(handler);
+  server = currentServer;
+  return new Promise((resolve) =>
+    currentServer.listen(0, "127.0.0.1", () => {
+      const address = currentServer.address();
+      if (!address || typeof address === "string") throw new Error("server did not start");
+      resolve(`http://127.0.0.1:${address.port}`);
+    }),
+  );
 }
 
 describe("page fetcher", () => {

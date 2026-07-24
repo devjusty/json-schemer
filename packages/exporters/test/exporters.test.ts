@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
 import type { PageExportData, SiteExportData } from "@schemer/storage";
+import { describe, expect, it } from "vitest";
 import { serializeCsv } from "../src/csv";
 import { serializeJson } from "../src/json";
 import { serializeMarkdown } from "../src/markdown";
@@ -79,7 +79,11 @@ const pageExport: PageExportData = { scan: site.scan, ...page };
 
 describe("exporters", () => {
   it("serializes stable JSON for site and page scopes", () => {
-    expect(JSON.parse(serializeJson(site))).toMatchObject({ formatVersion: 1, scan: { id: "scan-1" }, pages: [{ page: { id: "page-1" } }] });
+    expect(JSON.parse(serializeJson(site))).toMatchObject({
+      formatVersion: 1,
+      scan: { id: "scan-1" },
+      pages: [{ page: { id: "page-1" } }],
+    });
     expect(JSON.parse(serializeJson(pageExport)).pages).toHaveLength(1);
   });
 

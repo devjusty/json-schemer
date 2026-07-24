@@ -1,4 +1,4 @@
-import type { DatabaseSync } from "node:sqlite";
+import type { DatabaseSync, SQLInputValue } from "node:sqlite";
 import type { PageStatus, ScanSettings, ScanStatus } from "@schemer/domain";
 
 export interface ScanRecord {
@@ -146,7 +146,7 @@ function entityFromRow(row: Record<string, unknown>): SchemaEntityRecord {
 
 export function createRepositories(database: DatabaseSync) {
   const query = <T extends Record<string, unknown>>(sql: string, ...params: unknown[]): T[] =>
-    database.prepare(sql).all(...(params as any[])) as unknown as T[];
+    database.prepare(sql).all(...(params as SQLInputValue[])) as unknown as T[];
 
   const getScan = (id: string): ScanRecord => {
     const row = database.prepare("SELECT * FROM scans WHERE id = ?").get(id) as Record<string, unknown> | undefined;
@@ -155,9 +155,9 @@ export function createRepositories(database: DatabaseSync) {
   };
 
   const getPageDetail = (scanId: string, pageId: string): PageDetail => {
-    const pageRow = database
-      .prepare("SELECT * FROM pages WHERE id = ? AND scan_id = ?")
-      .get(pageId, scanId) as Record<string, unknown> | undefined;
+    const pageRow = database.prepare("SELECT * FROM pages WHERE id = ? AND scan_id = ?").get(pageId, scanId) as
+      | Record<string, unknown>
+      | undefined;
     if (!pageRow) throw new Error(`Page not found: ${pageId}`);
     const blocks = query<Record<string, unknown>>(
       "SELECT * FROM jsonld_blocks WHERE page_id = ? ORDER BY ordinal",
@@ -180,7 +180,15 @@ export function createRepositories(database: DatabaseSync) {
           .prepare(
             "INSERT INTO scans (id, target_url, sitemap_url, settings_json, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
           )
-          .run(input.id, input.targetUrl, input.sitemapUrl, JSON.stringify(input.settings), "queued", timestamp, timestamp);
+          .run(
+            input.id,
+            input.targetUrl,
+            input.sitemapUrl,
+            JSON.stringify(input.settings),
+            "queued",
+            timestamp,
+            timestamp,
+          );
         database.exec("COMMIT");
       } catch (error) {
         database.exec("ROLLBACK");
@@ -190,7 +198,9 @@ export function createRepositories(database: DatabaseSync) {
     },
 
     getActiveScan(): ScanRecord | null {
-      const row = database.prepare("SELECT * FROM scans ORDER BY created_at DESC LIMIT 1").get() as Record<string, unknown> | undefined;
+      const row = database.prepare("SELECT * FROM scans ORDER BY created_at DESC LIMIT 1").get() as
+        | Record<string, unknown>
+        | undefined;
       return row ? scanFromRow(row) : null;
     },
 
@@ -235,14 +245,25 @@ export function createRepositories(database: DatabaseSync) {
           input.error,
           createdAt,
         );
-      const row = database.prepare("SELECT * FROM pages WHERE scan_id = ? AND normalized_url = ?").get(input.scanId, input.normalizedUrl) as Record<string, unknown>;
+      const row = database
+        .prepare("SELECT * FROM pages WHERE scan_id = ? AND normalized_url = ?")
+        .get(input.scanId, input.normalizedUrl) as Record<string, unknown>;
       return pageFromRow(row);
     },
 
     insertJsonLdBlock(input: Omit<JsonLdBlockRecord, "parsed"> & { parsed: unknown | null }): void {
       database
-        .prepare("INSERT INTO jsonld_blocks (id, page_id, ordinal, raw_text, parsed_json, parse_error) VALUES (?, ?, ?, ?, ?, ?)")
-        .run(input.id, input.pageId, input.ordinal, input.rawText, input.parsed == null ? null : JSON.stringify(input.parsed), input.parseError);
+        .prepare(
+          "INSERT INTO jsonld_blocks (id, page_id, ordinal, raw_text, parsed_json, parse_error) VALUES (?, ?, ?, ?, ?, ?)",
+        )
+        .run(
+          input.id,
+          input.pageId,
+          input.ordinal,
+          input.rawText,
+          input.parsed == null ? null : JSON.stringify(input.parsed),
+          input.parseError,
+        );
     },
 
     insertSchemaEntity(input: SchemaEntityRecord): void {
@@ -253,7 +274,11 @@ export function createRepositories(database: DatabaseSync) {
 
     listPages(scanId: string, filters: { status?: PageStatus } = {}): PageRecord[] {
       const rows = filters.status
-        ? query<Record<string, unknown>>("SELECT * FROM pages WHERE scan_id = ? AND status = ? ORDER BY url", scanId, filters.status)
+        ? query<Record<string, unknown>>(
+            "SELECT * FROM pages WHERE scan_id = ? AND status = ? ORDER BY url",
+            scanId,
+            filters.status,
+          )
         : query<Record<string, unknown>>("SELECT * FROM pages WHERE scan_id = ? ORDER BY url", scanId);
       return rows.map(pageFromRow);
     },

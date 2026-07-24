@@ -1,8 +1,8 @@
-import Fastify, { type FastifyInstance } from "fastify";
 import { assertAllowedTarget } from "@schemer/crawler";
 import { DEFAULT_SCAN_SETTINGS, type ExportFormat } from "@schemer/domain";
 import { serializeCsv, serializeJson, serializeMarkdown } from "@schemer/exporters";
 import type { Repositories } from "@schemer/storage";
+import Fastify, { type FastifyInstance } from "fastify";
 import type { ScanInput, ScanManager } from "../scan/scan-manager";
 
 interface AppDependencies {
@@ -19,7 +19,8 @@ function parseSettings(value: unknown) {
   const candidate = value as Record<string, unknown>;
   const numeric = (key: keyof typeof DEFAULT_SCAN_SETTINGS, min: number, max: number): number => {
     const raw = candidate[key];
-    if (typeof raw !== "number" || !Number.isFinite(raw) || raw < min || raw > max) return DEFAULT_SCAN_SETTINGS[key] as number;
+    if (typeof raw !== "number" || !Number.isFinite(raw) || raw < min || raw > max)
+      return DEFAULT_SCAN_SETTINGS[key] as number;
     return Math.round(raw);
   };
   return {
@@ -81,59 +82,96 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
     return reply.send(dependencies.repositories.getActiveScan());
   });
 
-  app.get<{ Params: { scanId: string }; Querystring: { status?: string } }>("/api/scans/:scanId/pages", async (request, reply) => {
-    if (!dependencies.manager.get(request.params.scanId)) return reply.code(404).send({ error: "Scan not found" });
-    return reply.send(dependencies.repositories.listPages(request.params.scanId, request.query.status ? { status: request.query.status as never } : {}));
-  });
+  app.get<{ Params: { scanId: string }; Querystring: { status?: string } }>(
+    "/api/scans/:scanId/pages",
+    async (request, reply) => {
+      if (!dependencies.manager.get(request.params.scanId)) return reply.code(404).send({ error: "Scan not found" });
+      return reply.send(
+        dependencies.repositories.listPages(
+          request.params.scanId,
+          request.query.status ? { status: request.query.status as never } : {},
+        ),
+      );
+    },
+  );
 
-  app.get<{ Params: { scanId: string; pageId: string } }>("/api/scans/:scanId/pages/:pageId", async (request, reply) => {
-    try {
-      return reply.send(dependencies.repositories.getPageDetail(request.params.scanId, request.params.pageId));
-    } catch (error) {
-      return reply.code(404).send({ error: errorMessage(error) });
-    }
-  });
+  app.get<{ Params: { scanId: string; pageId: string } }>(
+    "/api/scans/:scanId/pages/:pageId",
+    async (request, reply) => {
+      try {
+        return reply.send(dependencies.repositories.getPageDetail(request.params.scanId, request.params.pageId));
+      } catch (error) {
+        return reply.code(404).send({ error: errorMessage(error) });
+      }
+    },
+  );
 
   app.get<{ Params: { scanId: string } }>("/api/scans/:scanId/events", async (request, reply) => {
     const scan = dependencies.manager.get(request.params.scanId);
     if (!scan) return reply.code(404).send({ error: "Scan not found" });
     reply.hijack();
-    reply.raw.writeHead(200, { "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" });
+    reply.raw.writeHead(200, {
+      "content-type": "text/event-stream",
+      "cache-control": "no-cache",
+      connection: "keep-alive",
+    });
     const send = (event: unknown) => reply.raw.write(`data: ${JSON.stringify(event)}\n\n`);
-    send({ type: "scan_state", progress: {
-      scanId: scan.id,
-      discovered: scan.discovered,
-      queued: scan.queued,
-      completed: scan.completed,
-      successful: scan.successful,
-      failed: scan.failed,
-    } });
+    send({
+      type: "scan_state",
+      progress: {
+        scanId: scan.id,
+        discovered: scan.discovered,
+        queued: scan.queued,
+        completed: scan.completed,
+        successful: scan.successful,
+        failed: scan.failed,
+      },
+    });
     const unsubscribe = dependencies.manager.subscribe(request.params.scanId, send);
     request.raw.on("close", unsubscribe);
   });
 
-  app.get<{ Params: { scanId: string; format: string } }>("/api/scans/:scanId/export/:format", async (request, reply) => {
-    if (!["json", "markdown", "csv"].includes(request.params.format)) return reply.code(400).send({ error: "Unsupported export format" });
-    try {
-      const format = request.params.format as ExportFormat;
-      const body = formatExport(format, dependencies.repositories.getSiteExportData(request.params.scanId));
-      return reply.header("content-type", formatContentType(format)).header("content-disposition", `attachment; filename=scan.${format === "markdown" ? "md" : format}`).send(body);
-    } catch (error) {
-      return reply.code(404).send({ error: errorMessage(error) });
-    }
-  });
+  app.get<{ Params: { scanId: string; format: string } }>(
+    "/api/scans/:scanId/export/:format",
+    async (request, reply) => {
+      if (!["json", "markdown", "csv"].includes(request.params.format))
+        return reply.code(400).send({ error: "Unsupported export format" });
+      try {
+        const format = request.params.format as ExportFormat;
+        const body = formatExport(format, dependencies.repositories.getSiteExportData(request.params.scanId));
+        return reply
+          .header("content-type", formatContentType(format))
+          .header("content-disposition", `attachment; filename=scan.${format === "markdown" ? "md" : format}`)
+          .send(body);
+      } catch (error) {
+        return reply.code(404).send({ error: errorMessage(error) });
+      }
+    },
+  );
 
-  app.get<{ Params: { scanId: string; pageId: string; format: string } }>("/api/scans/:scanId/pages/:pageId/export/:format", async (request, reply) => {
-    if (!["json", "markdown", "csv"].includes(request.params.format)) return reply.code(400).send({ error: "Unsupported export format" });
-    try {
-      const format = request.params.format as ExportFormat;
-      const body = formatExport(format, dependencies.repositories.getPageExportData(request.params.scanId, request.params.pageId));
-      return reply.header("content-type", formatContentType(format)).header("content-disposition", `attachment; filename=page.${format === "markdown" ? "md" : format}`).send(body);
-    } catch (error) {
-      return reply.code(404).send({ error: errorMessage(error) });
-    }
-  });
+  app.get<{ Params: { scanId: string; pageId: string; format: string } }>(
+    "/api/scans/:scanId/pages/:pageId/export/:format",
+    async (request, reply) => {
+      if (!["json", "markdown", "csv"].includes(request.params.format))
+        return reply.code(400).send({ error: "Unsupported export format" });
+      try {
+        const format = request.params.format as ExportFormat;
+        const body = formatExport(
+          format,
+          dependencies.repositories.getPageExportData(request.params.scanId, request.params.pageId),
+        );
+        return reply
+          .header("content-type", formatContentType(format))
+          .header("content-disposition", `attachment; filename=page.${format === "markdown" ? "md" : format}`)
+          .send(body);
+      } catch (error) {
+        return reply.code(404).send({ error: errorMessage(error) });
+      }
+    },
+  );
 
-  app.setErrorHandler((error, _request, reply) => reply.code(500).send({ error: error instanceof Error ? error.message : String(error) }));
+  app.setErrorHandler((error, _request, reply) =>
+    reply.code(500).send({ error: error instanceof Error ? error.message : String(error) }),
+  );
   return app;
 }

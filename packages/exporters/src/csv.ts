@@ -30,7 +30,14 @@ function rowsForPage(detail: PageDetail): string[] {
     }
     for (const entity of entities) {
       rows.push(
-        [detail.page.url, String(block.ordinal), entity.context, entity.types.join("|"), block.parseError ? "invalid" : "valid", entity.serialized]
+        [
+          detail.page.url,
+          String(block.ordinal),
+          entity.context,
+          entity.types.join("|"),
+          block.parseError ? "invalid" : "valid",
+          entity.serialized,
+        ]
           .map(csvCell)
           .join(","),
       );

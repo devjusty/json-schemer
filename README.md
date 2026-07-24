@@ -31,3 +31,18 @@ pnpm verify
 ```
 
 Fixture data used by crawler tests lives in `tests/fixtures/`.
+
+## Code Quality
+
+Biome formats JavaScript, TypeScript, JSX, TSX, JSON, and CSS. Fallow checks workspace reachability, unused code and dependencies, complexity, duplication, and changed-code risk.
+
+```bash
+pnpm format       # format and organize imports
+pnpm check:ci     # CI-safe Biome check
+pnpm fallow       # full Fallow analysis as JSON
+pnpm fallow:audit # changed-code audit against main
+pnpm fallow:review # non-blocking changed-code review brief
+pnpm quality      # Biome, typecheck, and tests
+```
+
+CI blocks Fallow dead-code, dependency, and import-graph regressions. Complexity, duplication, and styling findings are advisory until refactoring policy is established. Fallow telemetry remains disabled. Do not add generated `.data`, `dist`, Playwright, or worktree output to commits.

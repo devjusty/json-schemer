@@ -1,8 +1,7 @@
-import { describe, expect, it } from "vitest";
 import { DEFAULT_SCAN_SETTINGS } from "@schemer/domain";
 import { extractJsonLd } from "@schemer/extractor";
-import { createDatabase } from "@schemer/storage";
-import { createRepositories } from "@schemer/storage";
+import { createDatabase, createRepositories } from "@schemer/storage";
+import { describe, expect, it } from "vitest";
 import { ScanManager } from "../src/scan/scan-manager";
 
 describe("scan manager", () => {
@@ -19,7 +18,13 @@ describe("scan manager", () => {
       }),
       fetchPage: async (url) =>
         url.endsWith("/a")
-          ? { status: "ok", httpStatus: 200, contentType: "text/html", body: '<script type="application/ld+json">{"@type":"Article"}</script>', durationMs: 2 }
+          ? {
+              status: "ok",
+              httpStatus: 200,
+              contentType: "text/html",
+              body: '<script type="application/ld+json">{"@type":"Article"}</script>',
+              durationMs: 2,
+            }
           : { status: "http_error", httpStatus: 404, contentType: "text/html", message: "HTTP 404", durationMs: 2 },
       extract: extractJsonLd,
     });
@@ -28,7 +33,12 @@ describe("scan manager", () => {
     await manager.waitForIdle();
 
     expect(repositories.getActiveScan()).toMatchObject({ status: "completed", completed: 2, successful: 1, failed: 1 });
-    expect(repositories.listPages("scan-1").map((page) => page.status).sort()).toEqual(["http_error", "success"]);
+    expect(
+      repositories
+        .listPages("scan-1")
+        .map((page) => page.status)
+        .sort(),
+    ).toEqual(["http_error", "success"]);
     expect(repositories.getSiteExportData("scan-1").pages[0].blocks).toHaveLength(1);
   });
 });

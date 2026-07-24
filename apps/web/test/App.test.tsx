@@ -19,11 +19,16 @@ describe("scanner app", () => {
   it("submits site and optional sitemap URLs", async () => {
     render(<App />);
     fireEvent.change(screen.getByLabelText("Website URL"), { target: { value: "https://example.com" } });
-    fireEvent.change(screen.getByLabelText("Sitemap URL (optional)"), { target: { value: "https://example.com/sitemap.xml" } });
+    fireEvent.change(screen.getByLabelText("Sitemap URL (optional)"), {
+      target: { value: "https://example.com/sitemap.xml" },
+    });
     fireEvent.click(screen.getByRole("button", { name: "Start scan" }));
 
     expect(await screen.findByText("Scan queued")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Whole-site JSON" })).toHaveAttribute("href", "/api/scans/scan-1/export/json");
+    expect(screen.getByRole("link", { name: "Whole-site JSON" })).toHaveAttribute(
+      "href",
+      "/api/scans/scan-1/export/json",
+    );
   });
 
   it("renders distinct empty state before a scan", () => {

@@ -18,7 +18,8 @@ async function discoverDirect(sitemapUrl: string) {
   const urls: Array<{ url: string; source: string }> = [];
   const errors: Array<{ source: string; message: string }> = [];
   while (queue.length) {
-    const source = queue.shift()!;
+    const source = queue.shift();
+    if (!source) break;
     if (visited.has(source)) continue;
     visited.add(source);
     try {
@@ -38,7 +39,7 @@ async function main(): Promise<void> {
   const repositories = createRepositories(createDatabase(databasePath));
   const manager = new ScanManager({
     repositories,
-    discover: (target, sitemapUrl) => sitemapUrl ? discoverDirect(sitemapUrl) : discoverSitemaps(target, fetchText),
+    discover: (target, sitemapUrl) => (sitemapUrl ? discoverDirect(sitemapUrl) : discoverSitemaps(target, fetchText)),
     fetchPage,
     extract: extractJsonLd,
   });
