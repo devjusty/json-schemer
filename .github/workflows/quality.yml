@@ -30,6 +30,7 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      - run: pnpm exec playwright install --with-deps
       - run: pnpm test:e2e
       - run: pnpm exec fallow dead-code --ci --format sarif --quiet
       - run: pnpm exec fallow audit --base origin/main --brief --format json --quiet
