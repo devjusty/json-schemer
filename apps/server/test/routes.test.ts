@@ -1,6 +1,6 @@
+import { request } from "node:http";
 import { DEFAULT_SCAN_SETTINGS } from "@schemer/domain";
 import { createDatabase, createRepositories } from "@schemer/storage";
-import { request } from "node:http";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../src/http/routes";
 
@@ -55,21 +55,24 @@ describe("HTTP routes", () => {
     });
     const scan = repositories.getActiveScan();
     if (!scan) throw new Error("Expected active scan");
+    const staleScan = { ...scan, status: "queued" as const, discovered: 0, queued: 0 };
+    const progress = {
+      scanId: scan.id,
+      status: "crawling" as const,
+      discovered: 1,
+      queued: 1,
+      completed: 0,
+      successful: 0,
+      failed: 0,
+    };
     const manager = {
-      get: (scanId: string) => (scanId === scan.id ? scan : null),
+      get: (scanId: string) => (scanId === scan.id ? staleScan : null),
+      currentProgress: (scanId: string) => {
+        if (scanId !== scan.id) throw new Error(`Scan not found: ${scanId}`);
+        return progress;
+      },
       subscribe: (_scanId: string, next: (event: unknown) => void) => {
-        next({
-          type: "progress",
-          progress: {
-            scanId: scan.id,
-            status: "crawling",
-            discovered: 1,
-            queued: 1,
-            completed: 0,
-            successful: 0,
-            failed: 0,
-          },
-        });
+        next({ type: "progress", progress });
         return () => undefined;
       },
     };
@@ -78,19 +81,22 @@ describe("HTTP routes", () => {
     const address = app.server.address();
     if (!address || typeof address === "string") throw new Error("Expected server address");
     const responseBody = await new Promise<string>((resolve, reject) => {
-      const response = request({ host: "127.0.0.1", port: address.port, path: "/api/scans/scan-1/events" }, (incoming) => {
-        let body = "";
-        const timeout = setTimeout(() => reject(new Error("Timed out waiting for initial SSE events")), 1_000);
-        incoming.on("data", (chunk: Buffer) => {
-          body += chunk.toString();
-          if (body.includes('"type":"progress"') && body.includes('"type":"scan_state"')) {
-            clearTimeout(timeout);
-            resolve(body);
-            incoming.destroy();
-          }
-        });
-        incoming.once("error", reject);
-      });
+      const response = request(
+        { host: "127.0.0.1", port: address.port, path: "/api/scans/scan-1/events" },
+        (incoming) => {
+          let body = "";
+          const timeout = setTimeout(() => reject(new Error("Timed out waiting for initial SSE events")), 1_000);
+          incoming.on("data", (chunk: Buffer) => {
+            body += chunk.toString();
+            if (body.includes('"type":"progress"') && body.includes('"type":"scan_state"')) {
+              clearTimeout(timeout);
+              resolve(body);
+              incoming.destroy();
+            }
+          });
+          incoming.once("error", reject);
+        },
+      );
       response.once("error", reject);
       response.end();
     });
@@ -99,6 +105,7 @@ describe("HTTP routes", () => {
     expect(responseBody).toContain('"type":"scan_state"');
     expect(responseBody.indexOf('"type":"progress"')).toBeLessThan(responseBody.indexOf('"type":"scan_state"'));
     expect(responseBody).toContain('"status":"crawling"');
+    expect(responseBody).not.toContain('"status":"queued"');
     await app.close();
   });
 });

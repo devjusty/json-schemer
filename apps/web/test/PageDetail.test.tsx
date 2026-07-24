@@ -2,8 +2,8 @@
 import "@testing-library/jest-dom/vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { PageDetail } from "../src/components/PageDetail";
 import type { PageDetail as PageDetailData } from "../src/api";
+import { PageDetail } from "../src/components/PageDetail";
 
 afterEach(() => {
   cleanup();

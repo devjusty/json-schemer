@@ -7,6 +7,41 @@ import { ScanManager } from "../src/scan/scan-manager";
 type ScanEvent = Parameters<Parameters<ScanManager["subscribe"]>[1]>[0];
 
 describe("scan manager", () => {
+  it("passes sitemap fetch settings to discovery", async () => {
+    const repositories = createRepositories(createDatabase(":memory:"));
+    let discoveryArgs: unknown[] = [];
+    const manager = new ScanManager({
+      repositories,
+      discover: async (...args) => {
+        discoveryArgs = args;
+        return { urls: [], errors: [] };
+      },
+      fetchPage: async () => ({
+        status: "ok",
+        httpStatus: 200,
+        contentType: "text/html",
+        body: "<html></html>",
+        durationMs: 2,
+      }),
+      extract: extractJsonLd,
+    });
+    const settings = { ...DEFAULT_SCAN_SETTINGS, timeoutMs: 321, maxResponseBytes: 654 };
+
+    await manager.start({ targetUrl: "https://example.com", sitemapUrl: null, settings });
+    await manager.waitForIdle();
+
+    expect(discoveryArgs).toEqual([
+      new URL("https://example.com/"),
+      null,
+      {
+        maxRedirects: settings.maxRedirects,
+        sameOriginOnly: settings.sameOriginOnly,
+        timeoutMs: settings.timeoutMs,
+        maxResponseBytes: settings.maxResponseBytes,
+      },
+    ]);
+  });
+
   it("persists each page and completes after partial failure", async () => {
     const repositories = createRepositories(createDatabase(":memory:"));
     const events: ScanEvent[] = [];
@@ -45,6 +80,41 @@ describe("scan manager", () => {
         .sort(),
     ).toEqual(["http_error", "success"]);
     expect(repositories.getSiteExportData("scan-1").pages[0].blocks).toHaveLength(1);
+  });
+
+  it("preserves sitemap source for normalized page URLs", async () => {
+    const repositories = createRepositories(createDatabase(":memory:"));
+    const manager = new ScanManager({
+      repositories,
+      discover: async () => ({
+        urls: [
+          {
+            url: "HTTPS://EXAMPLE.COM:443/./a#section",
+            source: "https://example.com/sitemap.xml",
+          },
+        ],
+        errors: [],
+      }),
+      fetchPage: async () => ({
+        status: "ok",
+        httpStatus: 200,
+        contentType: "text/html",
+        body: "<html></html>",
+        durationMs: 2,
+      }),
+      extract: extractJsonLd,
+    });
+
+    await manager.start({ targetUrl: "https://example.com", sitemapUrl: null, settings: DEFAULT_SCAN_SETTINGS });
+    await manager.waitForIdle();
+
+    expect(repositories.listPages("scan-1")).toMatchObject([
+      {
+        url: "https://example.com/a",
+        normalizedUrl: "https://example.com/a",
+        sitemapSource: "https://example.com/sitemap.xml",
+      },
+    ]);
   });
 
   it("stops claiming pages after cancellation and preserves canceled status", async () => {

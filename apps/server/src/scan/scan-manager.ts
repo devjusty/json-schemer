@@ -1,9 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type { FetchResult } from "@schemer/crawler";
-import { filterSitemapUrls } from "@schemer/crawler";
+import { filterSitemapUrls, normalizeUrl } from "@schemer/crawler";
 import type { ScanProgress, ScanSettings, ScanStatus } from "@schemer/domain";
 import type { JsonLdExtractionResult } from "@schemer/extractor";
 import type { Repositories } from "@schemer/storage";
+import { PageProcessor } from "./page-processor";
 
 export interface DiscoveredUrl {
   url: string;
@@ -21,9 +22,16 @@ export interface DiscoveryResult {
   errors: Array<{ source: string; message: string }>;
 }
 
+export interface SitemapDiscoveryOptions {
+  maxRedirects: number;
+  sameOriginOnly: boolean;
+  timeoutMs: number;
+  maxResponseBytes: number;
+}
+
 export interface ScanDependencies {
   repositories: Repositories;
-  discover: (target: URL, sitemapUrl: string | null) => Promise<DiscoveryResult>;
+  discover: (target: URL, sitemapUrl: string | null, options: SitemapDiscoveryOptions) => Promise<DiscoveryResult>;
   fetchPage: (url: string, settings: ScanSettings) => Promise<FetchResult>;
   extract: (html: string) => JsonLdExtractionResult;
 }
@@ -37,18 +45,21 @@ type ScanEvent =
 
 type Listener = (event: ScanEvent) => void;
 
-function statusFor(result: FetchResult): "http_error" | "fetch_error" {
-  if (result.status === "http_error") return "http_error";
-  return "fetch_error";
-}
-
 export class ScanManager {
   private readonly listeners = new Map<string, Set<Listener>>();
   private readonly activeRuns = new Map<string, Promise<void>>();
   private readonly canceledRuns = new Set<string>();
+  private readonly pageProcessor: PageProcessor;
   private sequence = 0;
 
-  constructor(private readonly dependencies: ScanDependencies) {}
+  constructor(private readonly dependencies: ScanDependencies) {
+    this.pageProcessor = new PageProcessor({
+      repositories: dependencies.repositories,
+      fetchPage: dependencies.fetchPage,
+      extract: dependencies.extract,
+      createId: randomUUID,
+    });
+  }
 
   async start(input: ScanInput) {
     const scanId = `scan-${++this.sequence}`;
@@ -90,7 +101,7 @@ export class ScanManager {
     await Promise.all(this.activeRuns.values());
   }
 
-  private currentProgress(scanId: string): ScanProgress {
+  currentProgress(scanId: string): ScanProgress {
     const scan = this.dependencies.repositories.getActiveScan();
     if (!scan || scan.id !== scanId) throw new Error(`Scan not found: ${scanId}`);
     return {
@@ -117,14 +128,27 @@ export class ScanManager {
         status: "discovering",
       });
       this.publish(scanId, "scan_state");
-      const discovery = await this.dependencies.discover(target, input.sitemapUrl);
+      const discovery = await this.dependencies.discover(target, input.sitemapUrl, {
+        maxRedirects: input.settings.maxRedirects,
+        sameOriginOnly: input.settings.sameOriginOnly,
+        timeoutMs: input.settings.timeoutMs,
+        maxResponseBytes: input.settings.maxResponseBytes,
+      });
       if (this.canceledRuns.has(scanId)) return;
       const urls = filterSitemapUrls(
         discovery.urls.map((entry) => entry.url),
         target,
         input.settings.maxUrls,
       );
-      const sourceByUrl = new Map(discovery.urls.map((entry) => [entry.url, entry.source]));
+      const sourceByUrl = new Map<string, string>();
+      for (const entry of discovery.urls) {
+        try {
+          const normalizedUrl = normalizeUrl(entry.url, target);
+          if (!sourceByUrl.has(normalizedUrl)) sourceByUrl.set(normalizedUrl, entry.source);
+        } catch {
+          // Match filterSitemapUrls: entries outside scan policy are skipped.
+        }
+      }
       this.dependencies.repositories.updateScanProgress(scanId, {
         ...this.currentProgress(scanId),
         status: "crawling",
@@ -175,64 +199,14 @@ export class ScanManager {
     sitemapSource: string | null,
     settings: ScanSettings,
   ): Promise<void> {
-    const result = await this.dependencies.fetchPage(url, settings);
-    let status: "success" | "no_jsonld" | "invalid_jsonld" | "http_error" | "parse_error" | "fetch_error";
-    let extraction: JsonLdExtractionResult | null = null;
-    let error: string | null = null;
-    if (result.status === "ok") {
-      try {
-        extraction = this.dependencies.extract(result.body);
-        status = extraction.blocks.length === 0 ? "no_jsonld" : extraction.hasValidBlock ? "success" : "invalid_jsonld";
-      } catch (cause) {
-        status = "parse_error";
-        error = cause instanceof Error ? cause.message : String(cause);
-      }
-    } else {
-      status = statusFor(result);
-      error = result.message;
-    }
-
-    const page = this.dependencies.repositories.upsertPage({
-      id: randomUUID(),
-      scanId,
-      url,
-      normalizedUrl: url,
-      sitemapSource,
-      status,
-      httpStatus: result.httpStatus,
-      contentType: result.contentType,
-      durationMs: result.durationMs,
-      error,
-    });
-    if (extraction) {
-      for (const block of extraction.blocks) {
-        const blockId = randomUUID();
-        this.dependencies.repositories.insertJsonLdBlock({
-          id: blockId,
-          pageId: page.id,
-          ordinal: block.ordinal,
-          rawText: block.rawText,
-          parsed: block.parsed,
-          parseError: block.parseError,
-        });
-        for (const entity of block.entities) {
-          this.dependencies.repositories.insertSchemaEntity({
-            id: randomUUID(),
-            blockId,
-            context: entity.context,
-            types: entity.types,
-            serialized: entity.serialized,
-          });
-        }
-      }
-    }
+    const result = await this.pageProcessor.process(scanId, url, sitemapSource, settings);
     const progress = this.currentProgress(scanId);
     this.dependencies.repositories.updateScanProgress(scanId, {
       ...progress,
       status: this.canceledRuns.has(scanId) ? "canceled" : "crawling",
       completed: progress.completed + 1,
-      successful: progress.successful + (status === "success" ? 1 : 0),
-      failed: progress.failed + (status === "success" || status === "no_jsonld" ? 0 : 1),
+      successful: progress.successful + (result.successful ? 1 : 0),
+      failed: progress.failed + (result.successful || result.status === "no_jsonld" ? 0 : 1),
     });
     this.publish(scanId, "page_completed");
   }

@@ -73,7 +73,13 @@ interface ScanInput {
   settings: ScanSettings;
 }
 
-interface PageInput extends Omit<PageRecord, "createdAt"> {}
+export interface PageInput extends Omit<PageRecord, "createdAt"> {}
+
+export interface PagePersistenceInput {
+  page: PageInput;
+  blocks: Array<Omit<JsonLdBlockRecord, "parsed"> & { parsed: unknown | null }>;
+  entities: SchemaEntityRecord[];
+}
 
 interface ProgressInput {
   status: ScanStatus;
@@ -170,6 +176,56 @@ export function createRepositories(database: DatabaseSync) {
     return { page: pageFromRow(pageRow), blocks, entities };
   };
 
+  const upsertPage = (input: PageInput): PageRecord => {
+    const createdAt = now();
+    database
+      .prepare(
+        `INSERT INTO pages (id, scan_id, url, normalized_url, sitemap_source, status, http_status, content_type, duration_ms, error, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(scan_id, normalized_url) DO UPDATE SET url = excluded.url, sitemap_source = excluded.sitemap_source,
+           status = excluded.status, http_status = excluded.http_status, content_type = excluded.content_type,
+           duration_ms = excluded.duration_ms, error = excluded.error`,
+      )
+      .run(
+        input.id,
+        input.scanId,
+        input.url,
+        input.normalizedUrl,
+        input.sitemapSource,
+        input.status,
+        input.httpStatus,
+        input.contentType,
+        input.durationMs,
+        input.error,
+        createdAt,
+      );
+    const row = database
+      .prepare("SELECT * FROM pages WHERE scan_id = ? AND normalized_url = ?")
+      .get(input.scanId, input.normalizedUrl) as Record<string, unknown>;
+    return pageFromRow(row);
+  };
+
+  const insertJsonLdBlock = (input: PagePersistenceInput["blocks"][number]): void => {
+    database
+      .prepare(
+        "INSERT INTO jsonld_blocks (id, page_id, ordinal, raw_text, parsed_json, parse_error) VALUES (?, ?, ?, ?, ?, ?)",
+      )
+      .run(
+        input.id,
+        input.pageId,
+        input.ordinal,
+        input.rawText,
+        input.parsed == null ? null : JSON.stringify(input.parsed),
+        input.parseError,
+      );
+  };
+
+  const insertSchemaEntity = (input: SchemaEntityRecord): void => {
+    database
+      .prepare("INSERT INTO schema_entities (id, block_id, context, types_json, serialized) VALUES (?, ?, ?, ?, ?)")
+      .run(input.id, input.blockId, input.context, JSON.stringify(input.types), input.serialized);
+  };
+
   return {
     replaceActiveScan(input: ScanInput): ScanRecord {
       const timestamp = now();
@@ -223,53 +279,51 @@ export function createRepositories(database: DatabaseSync) {
     },
 
     upsertPage(input: PageInput): PageRecord {
-      const createdAt = now();
-      database
-        .prepare(
-          `INSERT INTO pages (id, scan_id, url, normalized_url, sitemap_source, status, http_status, content_type, duration_ms, error, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-           ON CONFLICT(scan_id, normalized_url) DO UPDATE SET url = excluded.url, sitemap_source = excluded.sitemap_source,
-             status = excluded.status, http_status = excluded.http_status, content_type = excluded.content_type,
-             duration_ms = excluded.duration_ms, error = excluded.error`,
-        )
-        .run(
-          input.id,
-          input.scanId,
-          input.url,
-          input.normalizedUrl,
-          input.sitemapSource,
-          input.status,
-          input.httpStatus,
-          input.contentType,
-          input.durationMs,
-          input.error,
-          createdAt,
-        );
-      const row = database
-        .prepare("SELECT * FROM pages WHERE scan_id = ? AND normalized_url = ?")
-        .get(input.scanId, input.normalizedUrl) as Record<string, unknown>;
-      return pageFromRow(row);
+      return upsertPage(input);
+    },
+
+    persistPage(input: PagePersistenceInput): PageRecord {
+      database.exec("BEGIN");
+      try {
+        const page = upsertPage(input.page);
+
+        const blockIds = new Set<string>();
+        for (const block of input.blocks) {
+          if (block.pageId !== input.page.id && block.pageId !== page.id) {
+            throw new Error(`Block does not belong to page: ${block.id}`);
+          }
+          if (blockIds.has(block.id)) {
+            throw new Error(`Duplicate block: ${block.id}`);
+          }
+          blockIds.add(block.id);
+        }
+        for (const entity of input.entities) {
+          if (!blockIds.has(entity.blockId)) {
+            throw new Error(`Entity does not belong to page snapshot: ${entity.id}`);
+          }
+        }
+
+        database
+          .prepare("DELETE FROM schema_entities WHERE block_id IN (SELECT id FROM jsonld_blocks WHERE page_id = ?)")
+          .run(page.id);
+        database.prepare("DELETE FROM jsonld_blocks WHERE page_id = ?").run(page.id);
+
+        for (const block of input.blocks) insertJsonLdBlock({ ...block, pageId: page.id });
+        for (const entity of input.entities) insertSchemaEntity(entity);
+        database.exec("COMMIT");
+        return page;
+      } catch (error) {
+        database.exec("ROLLBACK");
+        throw error;
+      }
     },
 
     insertJsonLdBlock(input: Omit<JsonLdBlockRecord, "parsed"> & { parsed: unknown | null }): void {
-      database
-        .prepare(
-          "INSERT INTO jsonld_blocks (id, page_id, ordinal, raw_text, parsed_json, parse_error) VALUES (?, ?, ?, ?, ?, ?)",
-        )
-        .run(
-          input.id,
-          input.pageId,
-          input.ordinal,
-          input.rawText,
-          input.parsed == null ? null : JSON.stringify(input.parsed),
-          input.parseError,
-        );
+      insertJsonLdBlock(input);
     },
 
     insertSchemaEntity(input: SchemaEntityRecord): void {
-      database
-        .prepare("INSERT INTO schema_entities (id, block_id, context, types_json, serialized) VALUES (?, ?, ?, ?, ?)")
-        .run(input.id, input.blockId, input.context, JSON.stringify(input.types), input.serialized);
+      insertSchemaEntity(input);
     },
 
     listPages(scanId: string, filters: { status?: PageStatus } = {}): PageRecord[] {

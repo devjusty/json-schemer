@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertAllowedTarget, filterSitemapUrls, normalizeUrl } from "../src/url-policy";
+import { assertAllowedTarget, assertAllowedTargetResolved, filterSitemapUrls, normalizeUrl } from "../src/url-policy";
 
 describe("URL policy", () => {
   it("accepts public HTTP(S) targets and rejects unsafe targets", () => {
@@ -9,6 +9,15 @@ describe("URL policy", () => {
     expect(() => assertAllowedTarget("http://127.0.0.1")).toThrow(/private/);
     expect(() => assertAllowedTarget("http://192.168.1.4")).toThrow(/private/);
     expect(() => assertAllowedTarget("https://user:password@example.com")).toThrow(/credentials/);
+  });
+
+  it("rejects public-looking hostnames that resolve to private addresses", async () => {
+    await expect(assertAllowedTargetResolved("https://public.example", async () => ["10.0.0.4"])).rejects.toThrow(
+      /private/,
+    );
+    await expect(
+      assertAllowedTargetResolved("https://public.example", async () => ["203.0.113.10"]),
+    ).resolves.toMatchObject({ hostname: "public.example" });
   });
 
   it("normalizes same-origin URLs and removes fragments", () => {

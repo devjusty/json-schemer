@@ -8,18 +8,17 @@ interface Group {
   rules: Rule[];
 }
 
+interface RobotsDocument {
+  groups: Group[];
+  sitemaps: string[];
+}
+
 export interface RobotsRules {
   sitemaps: string[];
   isAllowed(url: URL): boolean;
 }
 
-function matchingGroup(groups: Group[], userAgent: string): Group | undefined {
-  const normalized = userAgent.toLowerCase();
-  const exact = groups.find((group) => group.agents.some((agent) => agent !== "*" && normalized.includes(agent)));
-  return exact ?? groups.find((group) => group.agents.includes("*"));
-}
-
-export function parseRobots(text: string, userAgent: string): RobotsRules {
+function parseRobotsDocument(text: string): RobotsDocument {
   const groups: Group[] = [];
   const sitemaps: string[] = [];
   let current: Group | undefined;
@@ -27,7 +26,11 @@ export function parseRobots(text: string, userAgent: string): RobotsRules {
 
   for (const rawLine of text.split(/\r?\n/)) {
     const line = rawLine.split("#", 1)[0].trim();
-    if (!line) continue;
+    if (!line) {
+      current = undefined;
+      sawDirective = false;
+      continue;
+    }
     const separator = line.indexOf(":");
     if (separator === -1) continue;
     const key = line.slice(0, separator).trim().toLowerCase();
@@ -43,23 +46,44 @@ export function parseRobots(text: string, userAgent: string): RobotsRules {
         groups.push(current);
         sawDirective = false;
       }
-      current.agents.push(value.toLowerCase());
+      if (value) current.agents.push(value.toLowerCase());
       continue;
     }
-    if (!current || !["allow", "disallow"].includes(key)) continue;
+    if (!current) continue;
     sawDirective = true;
+    if (!["allow", "disallow"].includes(key)) continue;
     if (value) current.rules.push({ path: value, allowed: key === "allow" });
   }
 
-  const group = matchingGroup(groups, userAgent);
+  return { groups, sitemaps: [...new Set(sitemaps)] };
+}
+
+function createRobotsMatcher(groups: Group[], userAgent: string): (url: URL) => boolean {
+  const normalized = userAgent.toLowerCase();
+  const matchingAgents = groups.flatMap((group) =>
+    group.agents.filter((agent) => agent !== "*" && normalized.includes(agent)),
+  );
+  const specificLength = Math.max(0, ...matchingAgents.map((agent) => agent.length));
+  const specificGroups = groups.filter((group) =>
+    group.agents.some((agent) => agent !== "*" && agent.length === specificLength && normalized.includes(agent)),
+  );
+  const rules =
+    specificGroups.length > 0
+      ? specificGroups.flatMap((group) => group.rules)
+      : groups.filter((group) => group.agents.includes("*")).flatMap((group) => group.rules);
+
+  return (url: URL): boolean => {
+    const matching = rules
+      .filter((rule) => url.pathname.startsWith(rule.path))
+      .sort((a, b) => b.path.length - a.path.length || Number(b.allowed) - Number(a.allowed))[0];
+    return matching?.allowed ?? true;
+  };
+}
+
+export function parseRobots(text: string, userAgent: string): RobotsRules {
+  const document = parseRobotsDocument(text);
   return {
-    sitemaps: [...new Set(sitemaps)],
-    isAllowed(url: URL): boolean {
-      if (!group) return true;
-      const matching = group.rules
-        .filter((rule) => url.pathname.startsWith(rule.path))
-        .sort((a, b) => b.path.length - a.path.length)[0];
-      return matching?.allowed ?? true;
-    },
+    sitemaps: document.sitemaps,
+    isAllowed: createRobotsMatcher(document.groups, userAgent),
   };
 }

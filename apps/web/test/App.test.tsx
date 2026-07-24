@@ -21,6 +21,7 @@ vi.mock("../src/api", () => ({
 afterEach(() => {
   scanEventCallback = undefined;
   cleanup();
+  vi.clearAllMocks();
 });
 
 describe("scanner app", () => {

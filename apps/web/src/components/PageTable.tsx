@@ -25,7 +25,14 @@ export function PageTable({
           {pages.map((page) => (
             <tr key={page.id} className={selectedId === page.id ? "selected" : ""} onClick={() => onSelect(page.id)}>
               <td>
-                <button className="link-button" type="button" onClick={() => onSelect(page.id)}>
+                <button
+                  className="link-button"
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSelect(page.id);
+                  }}
+                >
                   {page.url}
                 </button>
               </td>

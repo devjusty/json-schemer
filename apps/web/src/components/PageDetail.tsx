@@ -63,7 +63,9 @@ export function PageDetail({
               }
             }}
           >
-            {copiedBlockId === block.id ? `Copied JSON-LD block ${block.ordinal}` : `Copy JSON-LD block ${block.ordinal}`}
+            {copiedBlockId === block.id
+              ? `Copied JSON-LD block ${block.ordinal}`
+              : `Copy JSON-LD block ${block.ordinal}`}
           </button>
           {block.parseError && <p className="error-text">{block.parseError}</p>}
           <pre>{block.rawText}</pre>

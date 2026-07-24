@@ -93,4 +93,121 @@ describe("scan repositories", () => {
     expect(repositories.getSiteExportData("scan-1").pages).toHaveLength(1);
     expect(repositories.getPageExportData("scan-1", "page-1").page.id).toBe("page-1");
   });
+
+  it("attaches normalized URL conflicts to persisted page and replaces children", () => {
+    const db = createDatabase(":memory:");
+    const repositories = createRepositories(db);
+    repositories.replaceActiveScan({
+      id: "scan-1",
+      targetUrl: "https://example.com",
+      sitemapUrl: null,
+      settings: DEFAULT_SCAN_SETTINGS,
+    });
+
+    repositories.persistPage({
+      page: {
+        id: "page-1",
+        scanId: "scan-1",
+        url: "https://example.com/a",
+        normalizedUrl: "https://example.com/a/",
+        sitemapSource: null,
+        status: "success",
+        httpStatus: 200,
+        contentType: "text/html",
+        durationMs: 1,
+        error: null,
+      },
+      blocks: [
+        {
+          id: "block-1",
+          pageId: "page-1",
+          ordinal: 0,
+          rawText: "old",
+          parsed: null,
+          parseError: null,
+        },
+      ],
+      entities: [],
+    });
+
+    const persisted = repositories.persistPage({
+      page: {
+        id: "page-2",
+        scanId: "scan-1",
+        url: "https://example.com/a?ref=current",
+        normalizedUrl: "https://example.com/a/",
+        sitemapSource: null,
+        status: "success",
+        httpStatus: 200,
+        contentType: "text/html",
+        durationMs: 2,
+        error: null,
+      },
+      blocks: [
+        {
+          id: "block-2",
+          pageId: "page-2",
+          ordinal: 0,
+          rawText: "current",
+          parsed: { "@type": "Article" },
+          parseError: null,
+        },
+      ],
+      entities: [
+        {
+          id: "entity-2",
+          blockId: "block-2",
+          context: "https://schema.org",
+          types: ["Article"],
+          serialized: '{"@type":"Article"}',
+        },
+      ],
+    });
+
+    expect(persisted.id).toBe("page-1");
+    expect(repositories.listPages("scan-1")).toHaveLength(1);
+    expect(repositories.getPageDetail("scan-1", "page-1")).toMatchObject({
+      blocks: [{ id: "block-2", pageId: "page-1", rawText: "current" }],
+      entities: [{ id: "entity-2", blockId: "block-2" }],
+    });
+  });
+
+  it("rejects child relationships outside current page snapshot", () => {
+    const db = createDatabase(":memory:");
+    const repositories = createRepositories(db);
+    repositories.replaceActiveScan({
+      id: "scan-1",
+      targetUrl: "https://example.com",
+      sitemapUrl: null,
+      settings: DEFAULT_SCAN_SETTINGS,
+    });
+
+    expect(() =>
+      repositories.persistPage({
+        page: {
+          id: "page-1",
+          scanId: "scan-1",
+          url: "https://example.com/a",
+          normalizedUrl: "https://example.com/a",
+          sitemapSource: null,
+          status: "success",
+          httpStatus: 200,
+          contentType: "text/html",
+          durationMs: 1,
+          error: null,
+        },
+        blocks: [],
+        entities: [
+          {
+            id: "entity-1",
+            blockId: "foreign-block",
+            context: null,
+            types: [],
+            serialized: "{}",
+          },
+        ],
+      }),
+    ).toThrow("Entity does not belong to page snapshot");
+    expect(repositories.listPages("scan-1")).toEqual([]);
+  });
 });

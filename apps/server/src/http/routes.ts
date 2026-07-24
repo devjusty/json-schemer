@@ -141,8 +141,7 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
   );
 
   app.get<{ Params: { scanId: string } }>("/api/scans/:scanId/events", async (request, reply) => {
-    const scan = dependencies.manager.get(request.params.scanId);
-    if (!scan) return reply.code(404).send({ error: "Scan not found" });
+    if (!dependencies.manager.get(request.params.scanId)) return reply.code(404).send({ error: "Scan not found" });
     reply.hijack();
     reply.raw.writeHead(200, {
       "content-type": "text/event-stream",
@@ -154,15 +153,7 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
     request.raw.on("close", unsubscribe);
     send({
       type: "scan_state",
-      progress: {
-        scanId: scan.id,
-        status: scan.status,
-        discovered: scan.discovered,
-        queued: scan.queued,
-        completed: scan.completed,
-        successful: scan.successful,
-        failed: scan.failed,
-      },
+      progress: dependencies.manager.currentProgress(request.params.scanId),
     });
   });
 

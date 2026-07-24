@@ -1,4 +1,13 @@
 import type { ScanSettings } from "@schemer/domain";
+import {
+  bodyByteLength,
+  classifyHttpStatus,
+  declaredResponseTooLarge,
+  discardResponseBody,
+  normalizeContentType,
+  readResponseBody,
+} from "./fetcher-response";
+import { assertAllowedTarget, assertAllowedTargetResolved, type ResolveHostname } from "./url-policy";
 
 export type FetchResult =
   | { status: "ok"; httpStatus: number; contentType: string; body: string; durationMs: number }
@@ -7,33 +16,33 @@ export type FetchResult =
   | { status: "too_large"; httpStatus: number; contentType: string; message: string; durationMs: number }
   | { status: "fetch_error"; httpStatus: null; contentType: null; message: string; durationMs: number };
 
-function contentTypeOf(response: Response): string {
-  return response.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase() ?? "";
-}
-
 export async function fetchPage(
   input: string,
-  settings: Pick<ScanSettings, "timeoutMs" | "maxResponseBytes" | "maxRedirects">,
+  settings: Pick<ScanSettings, "timeoutMs" | "maxResponseBytes" | "maxRedirects" | "sameOriginOnly">,
   fetchImpl: typeof fetch = fetch,
+  resolveHostname?: ResolveHostname,
 ): Promise<FetchResult> {
   const started = Date.now();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), settings.timeoutMs);
-  let currentUrl = input;
 
   try {
+    const initialUrl = await assertAllowedTargetResolved(input, resolveHostname);
+    let currentUrl = initialUrl.href;
     for (let redirect = 0; redirect <= settings.maxRedirects; redirect += 1) {
       const response = await fetchImpl(currentUrl, {
         signal: controller.signal,
         redirect: "manual",
         headers: { accept: "text/html,application/xhtml+xml" },
       });
-      const contentType = contentTypeOf(response);
+      const contentType = normalizeContentType(response.headers.get("content-type"));
       const durationMs = Date.now() - started;
 
-      if (response.status >= 300 && response.status < 400) {
+      const statusClass = classifyHttpStatus(response.status);
+      if (statusClass === "redirect") {
         const location = response.headers.get("location");
         if (!location || redirect === settings.maxRedirects) {
+          await discardResponseBody(response);
           return {
             status: "fetch_error",
             httpStatus: null,
@@ -42,11 +51,18 @@ export async function fetchPage(
             durationMs,
           };
         }
-        currentUrl = new URL(location, currentUrl).href;
+        await discardResponseBody(response);
+        const nextUrl = assertAllowedTarget(new URL(location, currentUrl).href);
+        if (settings.sameOriginOnly && nextUrl.origin !== initialUrl.origin) {
+          throw new Error("URL is outside the target origin");
+        }
+        const allowedNextUrl = await assertAllowedTargetResolved(nextUrl.href, resolveHostname);
+        currentUrl = allowedNextUrl.href;
         continue;
       }
 
-      if (response.status >= 400) {
+      if (statusClass === "error") {
+        await discardResponseBody(response);
         return {
           status: "http_error",
           httpStatus: response.status,
@@ -56,6 +72,7 @@ export async function fetchPage(
         };
       }
       if (!contentType.includes("html")) {
+        await discardResponseBody(response);
         return {
           status: "not_html",
           httpStatus: response.status,
@@ -64,8 +81,8 @@ export async function fetchPage(
           durationMs,
         };
       }
-      const declaredLength = Number(response.headers.get("content-length"));
-      if (Number.isFinite(declaredLength) && declaredLength > settings.maxResponseBytes) {
+      if (declaredResponseTooLarge(response, settings.maxResponseBytes)) {
+        await discardResponseBody(response);
         return {
           status: "too_large",
           httpStatus: response.status,
@@ -75,8 +92,8 @@ export async function fetchPage(
         };
       }
 
-      const body = await response.text();
-      if (new TextEncoder().encode(body).byteLength > settings.maxResponseBytes) {
+      const bodyResult = await readResponseBody(response, settings.maxResponseBytes);
+      if (bodyResult.tooLarge || bodyByteLength(bodyResult.body) > settings.maxResponseBytes) {
         return {
           status: "too_large",
           httpStatus: response.status,
@@ -85,7 +102,7 @@ export async function fetchPage(
           durationMs,
         };
       }
-      return { status: "ok", httpStatus: response.status, contentType, body, durationMs };
+      return { status: "ok", httpStatus: response.status, contentType, body: bodyResult.body, durationMs };
     }
     throw new Error("Redirect limit exceeded");
   } catch (error) {
