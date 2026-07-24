@@ -83,8 +83,9 @@ Page terminal statuses:
 
 - `success`: HTML fetched and at least one valid JSON-LD block found.
 - `no_jsonld`: HTML fetched but no JSON-LD block found.
+- `invalid_jsonld`: HTML fetched and JSON-LD blocks were found, but none parsed successfully.
 - `http_error`: response returned an HTTP error status.
-- `parse_error`: HTML could not be processed as expected.
+- `parse_error`: HTML could not be processed as expected before JSON-LD extraction.
 - `blocked`: disallowed by robots or scan scope.
 - `fetch_error`: timeout, DNS, TLS, connection, redirect, or other request failure.
 
