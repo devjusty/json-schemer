@@ -1,0 +1,24 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "projects": [
+    "@schemer/web",
+    "apps/server",
+    "packages/crawler",
+    "packages/domain",
+    "packages/exporters",
+    "packages/extractor",
+    "packages/storage"
+  ],
+  "ignore": {
+    "files": [
+      ".agents/**",
+      "skills/**",
+      "docs/**",
+      "tests/**",
+      ".fallow/**",
+      ".worktrees/**",
+      ".github/**",
+      ".vscode/**"
+    ]
+  }
+}

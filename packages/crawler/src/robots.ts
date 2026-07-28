@@ -70,7 +70,7 @@ function createRobotsMatcher(groups: Group[], userAgent: string): (url: URL) => 
   const rules =
     specificGroups.length > 0
       ? specificGroups.flatMap((group) => group.rules)
-      : groups.filter((group) => group.agents.includes("*")).flatMap((group) => group.rules);
+      : groups.flatMap((group) => (group.agents.includes("*") ? group.rules : []));
 
   return (url: URL): boolean => {
     const matching = rules

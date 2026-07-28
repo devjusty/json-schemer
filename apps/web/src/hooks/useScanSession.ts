@@ -112,7 +112,7 @@ export function useScanSession() {
     } catch (cause) {
       if (generation === scanGeneration.current) setError(messageFrom(cause));
     } finally {
-      if (generation === scanGeneration.current) setBusy(false);
+      setBusy(false);
     }
   }
 
@@ -161,9 +161,7 @@ export function useScanSession() {
         setError(messageFrom(cause));
       }
     } finally {
-      if (requestId === selectionRequest.current && generation === scanGeneration.current) {
-        setSelectBusy(false);
-      }
+      setSelectBusy(false);
     }
   }
 

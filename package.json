@@ -18,7 +18,8 @@
     "fallow:audit": "fallow audit --base main",
     "fallow:review": "fallow audit --base main --brief",
     "quality": "pnpm check:ci && pnpm typecheck && pnpm test",
-    "verify": "pnpm quality && pnpm build && pnpm test:e2e"
+    "verify": "pnpm quality && pnpm build && pnpm test:e2e",
+    "doctor": "npx react-doctor@latest"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
