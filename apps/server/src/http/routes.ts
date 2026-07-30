@@ -1,6 +1,12 @@
 import { assertAllowedTarget } from "@schemer/crawler";
 import { DEFAULT_SCAN_SETTINGS, type ExportFormat } from "@schemer/domain";
-import { serializeCsv, serializeJson, serializeMarkdown } from "@schemer/exporters";
+import {
+  contentDispositionAttachment,
+  exportBasename,
+  serializeCsv,
+  serializeJson,
+  serializeMarkdown,
+} from "@schemer/exporters";
 import type { Repositories } from "@schemer/storage";
 import Fastify, { type FastifyInstance, type FastifyReply } from "fastify";
 import type { ScanInput, ScanManager } from "../scan/scan-manager";
@@ -53,13 +59,13 @@ function sendExport(
   reply: FastifyReply,
   format: ExportFormat,
   data: Parameters<typeof serializeJson>[0],
-  filename: string,
+  basename: string,
 ) {
   if (!isTerminalScan(data.scan.status)) return reply.code(409).send({ error: "Scan is still active" });
   const body = formatExport(format, data);
   return reply
     .header("content-type", formatContentType(format))
-    .header("content-disposition", `attachment; filename=${filename}.${format === "markdown" ? "md" : format}`)
+    .header("content-disposition", contentDispositionAttachment(basename, format))
     .send(body);
 }
 
@@ -67,13 +73,14 @@ function handleExport(
   reply: FastifyReply,
   rawFormat: string,
   loadData: (format: ExportFormat) => Parameters<typeof serializeJson>[0],
-  filename: string,
+  basenameFor: (data: Parameters<typeof serializeJson>[0]) => string,
 ) {
   if (!["json", "markdown", "csv"].includes(rawFormat))
     return reply.code(400).send({ error: "Unsupported export format" });
   try {
     const format = rawFormat as ExportFormat;
-    return sendExport(reply, format, loadData(format), filename);
+    const data = loadData(format);
+    return sendExport(reply, format, data, basenameFor(data));
   } catch (error) {
     return reply.code(404).send({ error: errorMessage(error) });
   }
@@ -164,7 +171,7 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
         reply,
         request.params.format,
         () => dependencies.repositories.getSiteExportData(request.params.scanId),
-        "scan",
+        (data) => exportBasename(data.scan.targetUrl, "site"),
       );
     },
   );
@@ -176,7 +183,12 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
         reply,
         request.params.format,
         () => dependencies.repositories.getPageExportData(request.params.scanId, request.params.pageId),
-        "page",
+        (data) =>
+          exportBasename(
+            data.scan.targetUrl,
+            "page",
+            "page" in data ? data.page.url : data.pages[0]?.page.url,
+          ),
       );
     },
   );

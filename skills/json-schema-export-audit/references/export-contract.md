@@ -80,8 +80,9 @@ section per block. Each block reports `Valid JSON-LD` or its parse error and
 includes raw text inside a fenced `json` block.
 
 Markdown is presentation-oriented. It does not preserve scan settings, IDs,
-entities, parsed object structure, or all page metadata. A fence longer than
-three backticks is used when raw text contains triple backticks.
+entities, parsed object structure, or all page metadata. Fenced code blocks use
+one more backtick than the longest run of backticks in the raw text (at least
+three), so nested fences stay intact.
 
 ## Cross-format checks
 

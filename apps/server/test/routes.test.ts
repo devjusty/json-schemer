@@ -37,6 +37,32 @@ describe("HTTP routes", () => {
     await app.close();
   });
 
+  it("names completed site exports from the target hostname", async () => {
+    const repositories = createRepositories(createDatabase(":memory:"));
+    repositories.replaceActiveScan({
+      id: "scan-1",
+      targetUrl: "https://example.com/start",
+      sitemapUrl: null,
+      settings: DEFAULT_SCAN_SETTINGS,
+    });
+    repositories.updateScanProgress("scan-1", {
+      status: "completed",
+      discovered: 0,
+      queued: 0,
+      completed: 0,
+      successful: 0,
+      failed: 0,
+    });
+    const app = await createApp({ repositories, manager: {} as never });
+    const response = await app.inject({ method: "GET", url: "/api/scans/scan-1/export/csv" });
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-disposition"]).toBe(
+      'attachment; filename="example.com-schema-scan.csv"',
+    );
+    expect(response.headers["content-type"]).toContain("text/csv");
+    await app.close();
+  });
+
   it("subscribes before sending initial scan state", async () => {
     const repositories = createRepositories(createDatabase(":memory:"));
     repositories.replaceActiveScan({

@@ -1,6 +1,7 @@
 import type { PageExportData, SiteExportData } from "@schemer/storage";
 import { describe, expect, it } from "vitest";
 import { serializeCsv } from "../src/csv";
+import { contentDispositionAttachment, exportBasename } from "../src/filename";
 import { serializeJson } from "../src/json";
 import { serializeMarkdown } from "../src/markdown";
 
@@ -96,11 +97,51 @@ describe("exporters", () => {
     expect(output).not.toContain("<script");
   });
 
+  it("uses a fence longer than any backtick run in raw JSON-LD", () => {
+    const nested = {
+      ...site,
+      pages: [
+        {
+          ...page,
+          blocks: [
+            {
+              id: "block-fence",
+              pageId: "page-1",
+              ordinal: 0,
+              rawText: "before ```` middle ``` after",
+              parsed: null,
+              parseError: null,
+            },
+          ],
+          entities: [],
+        },
+      ],
+    };
+    const output = serializeMarkdown(nested);
+    expect(output).toContain("`````json\nbefore ```` middle ``` after\n`````");
+  });
+
   it("quotes CSV values and emits one row per entity or raw block", () => {
     const rows = serializeCsv(site).trim().split("\n");
     expect(rows[0]).toBe("page_url,block_index,context,type,parse_status,serialized_json");
     expect(rows).toHaveLength(3);
     expect(rows[1]).toContain('"https://example.com/a?x=1,2"');
     expect(rows[2]).toContain("invalid");
+  });
+
+  it("builds domain-based download basenames", () => {
+    expect(exportBasename("https://example.com/path", "site")).toBe("example.com-schema-scan");
+    expect(exportBasename("https://example.com/docs/guide", "page", "https://example.com/docs/guide")).toBe(
+      "example.com-docs-guide-schema-page",
+    );
+    expect(exportBasename("https://example.com/", "page", "https://example.com/")).toBe(
+      "example.com-home-schema-page",
+    );
+    expect(contentDispositionAttachment("example.com-schema-scan", "json")).toBe(
+      'attachment; filename="example.com-schema-scan.json"',
+    );
+    expect(contentDispositionAttachment("example.com-schema-scan", "markdown")).toBe(
+      'attachment; filename="example.com-schema-scan.md"',
+    );
   });
 });

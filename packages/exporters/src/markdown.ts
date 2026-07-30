@@ -7,7 +7,11 @@ function escapeCell(value: string): string {
 }
 
 function rawFence(rawText: string): string {
-  const fence = rawText.includes("```") ? "````" : "```";
+  let longest = 2;
+  for (const match of rawText.matchAll(/`+/g)) {
+    longest = Math.max(longest, match[0].length);
+  }
+  const fence = "`".repeat(longest + 1);
   return `${fence}json\n${rawText}\n${fence}`;
 }
 
