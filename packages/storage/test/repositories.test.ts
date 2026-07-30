@@ -77,20 +77,64 @@ describe("scan repositories", () => {
       sitemapUrl: null,
       settings: DEFAULT_SCAN_SETTINGS,
     });
+    repositories.persistPage({
+      page: {
+        id: "page-1",
+        scanId: "scan-1",
+        url: "https://example.com/a",
+        normalizedUrl: "https://example.com/a",
+        sitemapSource: null,
+        status: "success",
+        httpStatus: 200,
+        contentType: "text/html",
+        durationMs: 4,
+        error: null,
+      },
+      blocks: [
+        {
+          id: "block-1",
+          pageId: "page-1",
+          ordinal: 0,
+          rawText: '{"@type":"Article"}',
+          parsed: { "@type": "Article" },
+          parseError: null,
+        },
+      ],
+      entities: [
+        {
+          id: "entity-1",
+          blockId: "block-1",
+          context: "https://schema.org",
+          types: ["Article"],
+          serialized: '{"@type":"Article"}',
+        },
+      ],
+    });
     repositories.upsertPage({
-      id: "page-1",
+      id: "page-2",
       scanId: "scan-1",
-      url: "https://example.com",
-      normalizedUrl: "https://example.com/",
+      url: "https://example.com/b",
+      normalizedUrl: "https://example.com/b",
       sitemapSource: null,
       status: "no_jsonld",
       httpStatus: 200,
       contentType: "text/html",
-      durationMs: 4,
+      durationMs: 3,
       error: null,
     });
 
-    expect(repositories.getSiteExportData("scan-1").pages).toHaveLength(1);
+    const site = repositories.getSiteExportData("scan-1");
+    expect(site.pages).toHaveLength(2);
+    expect(site.pages[0]).toMatchObject({
+      page: { id: "page-1", url: "https://example.com/a" },
+      blocks: [{ id: "block-1", ordinal: 0 }],
+      entities: [{ id: "entity-1", types: ["Article"] }],
+    });
+    expect(site.pages[1]).toMatchObject({
+      page: { id: "page-2", status: "no_jsonld" },
+      blocks: [],
+      entities: [],
+    });
     expect(repositories.getPageExportData("scan-1", "page-1").page.id).toBe("page-1");
   });
 

@@ -59,7 +59,45 @@ describe("HTTP routes", () => {
     expect(response.headers["content-disposition"]).toBe(
       'attachment; filename="example.com-schema-scan.csv"',
     );
-    expect(response.headers["content-type"]).toContain("text/csv");
+    expect(response.headers["content-type"]).toBe("text/csv; charset=utf-8");
+    await app.close();
+  });
+
+  it("returns 404 when exporting a missing scan", async () => {
+    const repositories = createRepositories(createDatabase(":memory:"));
+    const app = await createApp({ repositories, manager: {} as never });
+    const response = await app.inject({ method: "GET", url: "/api/scans/missing/export/json" });
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ error: "Scan not found: missing" });
+    await app.close();
+  });
+
+  it("returns 500 when export data loading fails unexpectedly", async () => {
+    const repositories = createRepositories(createDatabase(":memory:"));
+    repositories.replaceActiveScan({
+      id: "scan-1",
+      targetUrl: "https://example.com",
+      sitemapUrl: null,
+      settings: DEFAULT_SCAN_SETTINGS,
+    });
+    repositories.updateScanProgress("scan-1", {
+      status: "completed",
+      discovered: 0,
+      queued: 0,
+      completed: 0,
+      successful: 0,
+      failed: 0,
+    });
+    const broken = {
+      ...repositories,
+      getSiteExportData: () => {
+        throw new Error("disk failure");
+      },
+    };
+    const app = await createApp({ repositories: broken as never, manager: {} as never });
+    const response = await app.inject({ method: "GET", url: "/api/scans/scan-1/export/json" });
+    expect(response.statusCode).toBe(500);
+    expect(response.json()).toMatchObject({ error: "disk failure" });
     await app.close();
   });
 

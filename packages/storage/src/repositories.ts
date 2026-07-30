@@ -340,7 +340,53 @@ export function createRepositories(database: DatabaseSync) {
     getPageDetail,
 
     getSiteExportData(scanId: string): SiteExportData {
-      return { scan: getScan(scanId), pages: this.listPages(scanId).map((page) => getPageDetail(scanId, page.id)) };
+      const scan = getScan(scanId);
+      const pages = query<Record<string, unknown>>(
+        "SELECT * FROM pages WHERE scan_id = ? ORDER BY url",
+        scanId,
+      ).map(pageFromRow);
+      const blocks = query<Record<string, unknown>>(
+        `SELECT jsonld_blocks.* FROM jsonld_blocks
+         JOIN pages ON pages.id = jsonld_blocks.page_id
+         WHERE pages.scan_id = ?
+         ORDER BY jsonld_blocks.page_id, jsonld_blocks.ordinal`,
+        scanId,
+      ).map(blockFromRow);
+      const entities = query<Record<string, unknown>>(
+        `SELECT schema_entities.* FROM schema_entities
+         JOIN jsonld_blocks ON jsonld_blocks.id = schema_entities.block_id
+         JOIN pages ON pages.id = jsonld_blocks.page_id
+         WHERE pages.scan_id = ?
+         ORDER BY jsonld_blocks.page_id, jsonld_blocks.ordinal, schema_entities.id`,
+        scanId,
+      ).map(entityFromRow);
+
+      const blocksByPage = new Map<string, JsonLdBlockRecord[]>();
+      const pageIdByBlockId = new Map<string, string>();
+      for (const block of blocks) {
+        const list = blocksByPage.get(block.pageId) ?? [];
+        list.push(block);
+        blocksByPage.set(block.pageId, list);
+        pageIdByBlockId.set(block.id, block.pageId);
+      }
+
+      const entitiesByPage = new Map<string, SchemaEntityRecord[]>();
+      for (const entity of entities) {
+        const pageId = pageIdByBlockId.get(entity.blockId);
+        if (!pageId) continue;
+        const list = entitiesByPage.get(pageId) ?? [];
+        list.push(entity);
+        entitiesByPage.set(pageId, list);
+      }
+
+      return {
+        scan,
+        pages: pages.map((page) => ({
+          page,
+          blocks: blocksByPage.get(page.id) ?? [],
+          entities: entitiesByPage.get(page.id) ?? [],
+        })),
+      };
     },
 
     getPageExportData(scanId: string, pageId: string): PageExportData {

@@ -42,7 +42,9 @@ function parseSettings(value: unknown) {
 }
 
 function formatContentType(format: ExportFormat): string {
-  return format === "json" ? "application/json" : format === "markdown" ? "text/markdown" : "text/csv";
+  const base =
+    format === "json" ? "application/json" : format === "markdown" ? "text/markdown" : "text/csv";
+  return `${base}; charset=utf-8`;
 }
 
 function formatExport(format: ExportFormat, data: Parameters<typeof serializeJson>[0]): string {
@@ -53,6 +55,11 @@ function formatExport(format: ExportFormat, data: Parameters<typeof serializeJso
 
 function isTerminalScan(status: string): boolean {
   return ["completed", "canceled", "failed"].includes(status);
+}
+
+function isNotFoundError(error: unknown): boolean {
+  const message = errorMessage(error);
+  return message.startsWith("Scan not found:") || message.startsWith("Page not found:");
 }
 
 function sendExport(
@@ -82,7 +89,7 @@ function handleExport(
     const data = loadData(format);
     return sendExport(reply, format, data, basenameFor(data));
   } catch (error) {
-    return reply.code(404).send({ error: errorMessage(error) });
+    return reply.code(isNotFoundError(error) ? 404 : 500).send({ error: errorMessage(error) });
   }
 }
 

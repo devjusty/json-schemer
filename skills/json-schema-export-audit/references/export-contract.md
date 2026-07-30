@@ -52,8 +52,12 @@ The exact header is:
 page_url,block_index,context,type,parse_status,serialized_json
 ```
 
-Rows are produced per block:
+Rows are produced per page:
 
+- If a page has no JSON-LD blocks (for example `no_jsonld`, `http_error` /
+  404, `fetch_error`, `parse_error`, or `blocked`), emit one placeholder row
+  with `page_url` set and the other columns empty. Placeholder rows are
+  required so every scanned URL appears; they are not duplicates.
 - If a block has entities, emit one row per entity.
 - If a block has no entities, emit one row containing its `rawText` in
   `serialized_json`.

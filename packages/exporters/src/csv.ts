@@ -10,6 +10,10 @@ function csvCell(value: string | null): string {
 }
 
 function rowsForPage(detail: PageDetail): string[] {
+  if (detail.blocks.length === 0) {
+    return [[detail.page.url, "", "", "", "", ""].map(csvCell).join(",")];
+  }
+
   const entitiesByBlock = new Map<string, typeof detail.entities>();
   for (const entity of detail.entities) {
     const entities = entitiesByBlock.get(entity.blockId) ?? [];

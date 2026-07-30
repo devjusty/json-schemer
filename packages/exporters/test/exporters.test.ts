@@ -129,6 +129,61 @@ describe("exporters", () => {
     expect(rows[2]).toContain("invalid");
   });
 
+  it("emits a placeholder CSV row for pages with no JSON-LD blocks", () => {
+    const emptyPages: SiteExportData = {
+      ...site,
+      pages: [
+        {
+          page: {
+            ...page.page,
+            id: "page-no-jsonld",
+            url: "https://example.com/empty",
+            normalizedUrl: "https://example.com/empty",
+            status: "no_jsonld",
+          },
+          blocks: [],
+          entities: [],
+        },
+        {
+          page: {
+            ...page.page,
+            id: "page-404",
+            url: "https://example.com/missing",
+            normalizedUrl: "https://example.com/missing",
+            status: "http_error",
+            httpStatus: 404,
+            error: "HTTP 404",
+          },
+          blocks: [],
+          entities: [],
+        },
+      ],
+    };
+    const rows = serializeCsv(emptyPages).trim().split("\n");
+    expect(rows).toEqual([
+      "page_url,block_index,context,type,parse_status,serialized_json",
+      "https://example.com/empty,,,,,",
+      "https://example.com/missing,,,,,",
+    ]);
+  });
+
+  it("keeps invalid JSON-LD block rows instead of placeholders", () => {
+    const invalidOnly: SiteExportData = {
+      ...site,
+      pages: [
+        {
+          page: { ...page.page, status: "invalid_jsonld" },
+          blocks: [page.blocks[1]],
+          entities: [],
+        },
+      ],
+    };
+    const rows = serializeCsv(invalidOnly).trim().split("\n");
+    expect(rows).toHaveLength(2);
+    expect(rows[1]).toContain("invalid");
+    expect(rows[1]).toContain('"{""@type"":""Broken""}"');
+  });
+
   it("builds domain-based download basenames", () => {
     expect(exportBasename("https://example.com/path", "site")).toBe("example.com-schema-scan");
     expect(exportBasename("https://example.com/docs/guide", "page", "https://example.com/docs/guide")).toBe(
