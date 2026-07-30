@@ -35,8 +35,10 @@ a {
 .masthead h1 {
   margin: 0 0 8px;
   font:
-    700 clamp(1.75rem, 3.5vw, 2.25rem) / 1.15 "Source Serif 4 Variable", "Source Serif 4",
-    Georgia, serif;
+    700 clamp(1.75rem, 3.5vw, 2.25rem) / 1.15 "Source Serif 4 Variable",
+    "Source Serif 4",
+    Georgia,
+    serif;
   letter-spacing: -0.03em;
   color: #f4f0e5;
 }
@@ -142,7 +144,9 @@ button:disabled {
   margin: 0;
   color: #f4f0e5;
   font:
-    1.6rem "Source Serif 4 Variable", "Source Serif 4", Georgia,
+    1.6rem "Source Serif 4 Variable",
+    "Source Serif 4",
+    Georgia,
     serif;
   text-transform: capitalize;
 }
@@ -175,7 +179,9 @@ button:disabled {
   display: block;
   color: #d7ef9e;
   font:
-    1.7rem "Source Serif 4 Variable", "Source Serif 4", Georgia,
+    1.7rem "Source Serif 4 Variable",
+    "Source Serif 4",
+    Georgia,
     serif;
 }
 .export-bar {
@@ -275,7 +281,9 @@ tr.selected {
   overflow-wrap: anywhere;
   margin: 0 0 4px;
   font:
-    1.4rem "Source Serif 4 Variable", "Source Serif 4", Georgia,
+    1.4rem "Source Serif 4 Variable",
+    "Source Serif 4",
+    Georgia,
     serif;
 }
 .page-exports {

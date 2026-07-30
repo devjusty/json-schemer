@@ -47,7 +47,9 @@ export function ProgressPanel({ scan }: { scan: Scan }) {
               </a>
             </span>
           ) : (
-            <span>{scan.status === "discovering" || scan.status === "queued" ? "Sitemap discovering…" : "No sitemap"}</span>
+            <span>
+              {scan.status === "discovering" || scan.status === "queued" ? "Sitemap discovering…" : "No sitemap"}
+            </span>
           )}
           {finishedAt ? (
             <>

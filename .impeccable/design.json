@@ -8,391 +8,157 @@
         "role": "primary",
         "displayName": "Chartreuse Signal",
         "canonical": "#b7db7a",
-        "tonalRamp": [
-          "#011000",
-          "#152c00",
-          "#2f4a00",
-          "#4c6900",
-          "#6a8a27",
-          "#8bad4c",
-          "#acd06f",
-          "#cff492"
-        ]
+        "tonalRamp": ["#011000", "#152c00", "#2f4a00", "#4c6900", "#6a8a27", "#8bad4c", "#acd06f", "#cff492"]
       },
       "chartreuse-soft": {
         "role": "primary",
         "displayName": "Chartreuse Soft",
         "canonical": "#d7ef9e",
-        "tonalRamp": [
-          "#060f00",
-          "#1c2a00",
-          "#374700",
-          "#546613",
-          "#738739",
-          "#93a95b",
-          "#b5cc7d",
-          "#d8f09f"
-        ]
+        "tonalRamp": ["#060f00", "#1c2a00", "#374700", "#546613", "#738739", "#93a95b", "#b5cc7d", "#d8f09f"]
       },
       "moss-label": {
         "role": "primary",
         "displayName": "Moss Label",
         "canonical": "#9ec463",
-        "tonalRamp": [
-          "#001100",
-          "#122d00",
-          "#2d4a00",
-          "#496a00",
-          "#688b27",
-          "#88ad4c",
-          "#aad16f",
-          "#cdf593"
-        ]
+        "tonalRamp": ["#001100", "#122d00", "#2d4a00", "#496a00", "#688b27", "#88ad4c", "#aad16f", "#cdf593"]
       },
       "moss-border": {
         "role": "secondary",
         "displayName": "Moss Border",
         "canonical": "#718c58",
-        "tonalRamp": [
-          "#011000",
-          "#152b00",
-          "#304816",
-          "#4d6734",
-          "#6c8753",
-          "#8da974",
-          "#afcc95",
-          "#d2f0b8"
-        ]
+        "tonalRamp": ["#011000", "#152b00", "#304816", "#4d6734", "#6c8753", "#8da974", "#afcc95", "#d2f0b8"]
       },
       "night-soil": {
         "role": "neutral",
         "displayName": "Night Soil",
         "canonical": "#101211",
-        "tonalRamp": [
-          "#0a0c0b",
-          "#222523",
-          "#3e403f",
-          "#5c5e5d",
-          "#7b7e7d",
-          "#9c9f9e",
-          "#bfc2c0",
-          "#e2e5e4"
-        ]
+        "tonalRamp": ["#0a0c0b", "#222523", "#3e403f", "#5c5e5d", "#7b7e7d", "#9c9f9e", "#bfc2c0", "#e2e5e4"]
       },
       "moss-canopy": {
         "role": "neutral",
         "displayName": "Moss Canopy",
         "canonical": "#27372d",
-        "tonalRamp": [
-          "#020f07",
-          "#19281f",
-          "#34443a",
-          "#516357",
-          "#708277",
-          "#91a498",
-          "#b3c7ba",
-          "#d6eadd"
-        ]
+        "tonalRamp": ["#020f07", "#19281f", "#34443a", "#516357", "#708277", "#91a498", "#b3c7ba", "#d6eadd"]
       },
       "panel-surface": {
         "role": "neutral",
         "displayName": "Panel Surface",
         "canonical": "#191f1a",
-        "tonalRamp": [
-          "#070d08",
-          "#202621",
-          "#3b423c",
-          "#59605a",
-          "#788079",
-          "#99a19a",
-          "#bbc3bc",
-          "#dfe7e0"
-        ]
+        "tonalRamp": ["#070d08", "#202621", "#3b423c", "#59605a", "#788079", "#99a19a", "#bbc3bc", "#dfe7e0"]
       },
       "panel-border": {
         "role": "neutral",
         "displayName": "Panel Border",
         "canonical": "#354139",
-        "tonalRamp": [
-          "#050e08",
-          "#1c2720",
-          "#37433b",
-          "#556159",
-          "#748178",
-          "#95a399",
-          "#b7c5bb",
-          "#dae9df"
-        ]
+        "tonalRamp": ["#050e08", "#1c2720", "#37433b", "#556159", "#748178", "#95a399", "#b7c5bb", "#dae9df"]
       },
       "field-bg": {
         "role": "neutral",
         "displayName": "Field Background",
         "canonical": "#111611",
-        "tonalRamp": [
-          "#080d08",
-          "#202620",
-          "#3c423c",
-          "#596059",
-          "#797f79",
-          "#9aa19a",
-          "#bcc3bc",
-          "#e0e7df"
-        ]
+        "tonalRamp": ["#080d08", "#202620", "#3c423c", "#596059", "#797f79", "#9aa19a", "#bcc3bc", "#e0e7df"]
       },
       "field-border": {
         "role": "neutral",
         "displayName": "Field Border",
         "canonical": "#4a5b4a",
-        "tonalRamp": [
-          "#030f03",
-          "#19281a",
-          "#344535",
-          "#526352",
-          "#718371",
-          "#92a492",
-          "#b4c7b4",
-          "#d7ebd7"
-        ]
+        "tonalRamp": ["#030f03", "#19281a", "#344535", "#526352", "#718371", "#92a492", "#b4c7b4", "#d7ebd7"]
       },
       "soft-parchment": {
         "role": "neutral",
         "displayName": "Soft Parchment",
         "canonical": "#f4f0e5",
-        "tonalRamp": [
-          "#0e0b05",
-          "#27241c",
-          "#434037",
-          "#615d54",
-          "#817d73",
-          "#a29e94",
-          "#c5c1b6",
-          "#e8e4d9"
-        ]
+        "tonalRamp": ["#0e0b05", "#27241c", "#434037", "#615d54", "#817d73", "#a29e94", "#c5c1b6", "#e8e4d9"]
       },
       "body-ink": {
         "role": "neutral",
         "displayName": "Body Ink",
         "canonical": "#e9e6dc",
-        "tonalRamp": [
-          "#0d0b05",
-          "#26241d",
-          "#424038",
-          "#605e55",
-          "#807d74",
-          "#a19e95",
-          "#c4c1b7",
-          "#e8e5db"
-        ]
+        "tonalRamp": ["#0d0b05", "#26241d", "#424038", "#605e55", "#807d74", "#a19e95", "#c4c1b7", "#e8e5db"]
       },
       "muted-sage": {
         "role": "neutral",
         "displayName": "Muted Sage",
         "canonical": "#a6afa3",
-        "tonalRamp": [
-          "#070d06",
-          "#1f261d",
-          "#3b4238",
-          "#586056",
-          "#788075",
-          "#99a296",
-          "#bbc4b8",
-          "#dee8db"
-        ]
+        "tonalRamp": ["#070d06", "#1f261d", "#3b4238", "#586056", "#788075", "#99a296", "#bbc4b8", "#dee8db"]
       },
       "label-sage": {
         "role": "neutral",
         "displayName": "Label Sage",
         "canonical": "#bdc6b9",
-        "tonalRamp": [
-          "#070d05",
-          "#20261d",
-          "#3b4238",
-          "#596055",
-          "#788074",
-          "#99a295",
-          "#bbc4b7",
-          "#dfe8db"
-        ]
+        "tonalRamp": ["#070d05", "#20261d", "#3b4238", "#596055", "#788074", "#99a295", "#bbc4b7", "#dfe8db"]
       },
       "quiet-sage": {
         "role": "neutral",
         "displayName": "Quiet Sage",
         "canonical": "#7e8b7d",
-        "tonalRamp": [
-          "#050e05",
-          "#1d271c",
-          "#384337",
-          "#556254",
-          "#758174",
-          "#95a394",
-          "#b8c5b7",
-          "#dbe9da"
-        ]
+        "tonalRamp": ["#050e05", "#1d271c", "#384337", "#556254", "#758174", "#95a394", "#b8c5b7", "#dbe9da"]
       },
       "grid-sage": {
         "role": "neutral",
         "displayName": "Grid Sage",
         "canonical": "#8c9a8a",
-        "tonalRamp": [
-          "#050e04",
-          "#1c281b",
-          "#384436",
-          "#556253",
-          "#748272",
-          "#95a393",
-          "#b7c6b5",
-          "#dbead8"
-        ]
+        "tonalRamp": ["#050e04", "#1c281b", "#384436", "#556253", "#748272", "#95a393", "#b7c6b5", "#dbead8"]
       },
       "row-selected": {
         "role": "neutral",
         "displayName": "Row Selected",
         "canonical": "#28382c",
-        "tonalRamp": [
-          "#030f05",
-          "#19281d",
-          "#344438",
-          "#516355",
-          "#718375",
-          "#91a495",
-          "#b3c7b8",
-          "#d7ebdb"
-        ]
+        "tonalRamp": ["#030f05", "#19281d", "#344438", "#516355", "#718375", "#91a495", "#b3c7b8", "#d7ebdb"]
       },
       "row-rule": {
         "role": "neutral",
         "displayName": "Row Rule",
         "canonical": "#29342c",
-        "tonalRamp": [
-          "#050e07",
-          "#1c271f",
-          "#38433b",
-          "#556158",
-          "#748178",
-          "#95a299",
-          "#b7c5bb",
-          "#dbe9de"
-        ]
+        "tonalRamp": ["#050e07", "#1c271f", "#38433b", "#556158", "#748178", "#95a299", "#b7c5bb", "#dbe9de"]
       },
       "code-bg": {
         "role": "neutral",
         "displayName": "Code Background",
         "canonical": "#101611",
-        "tonalRamp": [
-          "#070d08",
-          "#202621",
-          "#3b423c",
-          "#58605a",
-          "#788079",
-          "#99a19a",
-          "#bbc3bc",
-          "#dfe7e0"
-        ]
+        "tonalRamp": ["#070d08", "#202621", "#3b423c", "#58605a", "#788079", "#99a19a", "#bbc3bc", "#dfe7e0"]
       },
       "code-ink": {
         "role": "neutral",
         "displayName": "Code Ink",
         "canonical": "#c6d6bb",
-        "tonalRamp": [
-          "#050e00",
-          "#1c2813",
-          "#38442e",
-          "#55634b",
-          "#74836a",
-          "#95a48a",
-          "#b7c7ac",
-          "#dbebcf"
-        ]
+        "tonalRamp": ["#050e00", "#1c2813", "#38442e", "#55634b", "#74836a", "#95a48a", "#b7c7ac", "#dbebcf"]
       },
       "coral-fault": {
         "role": "tertiary",
         "displayName": "Coral Fault",
         "canonical": "#ef9277",
-        "tonalRamp": [
-          "#2d0000",
-          "#4f0000",
-          "#712004",
-          "#944028",
-          "#b96148",
-          "#de8268",
-          "#ffa589",
-          "#ffc8ac"
-        ]
+        "tonalRamp": ["#2d0000", "#4f0000", "#712004", "#944028", "#b96148", "#de8268", "#ffa589", "#ffc8ac"]
       },
       "coral-ink": {
         "role": "tertiary",
         "displayName": "Coral Ink",
         "canonical": "#ffc0a8",
-        "tonalRamp": [
-          "#230000",
-          "#421200",
-          "#622f1b",
-          "#834e39",
-          "#a66d57",
-          "#ca8e77",
-          "#eeb099",
-          "#ffd4bb"
-        ]
+        "tonalRamp": ["#230000", "#421200", "#622f1b", "#834e39", "#a66d57", "#ca8e77", "#eeb099", "#ffd4bb"]
       },
       "fault-surface": {
         "role": "tertiary",
         "displayName": "Fault Surface",
         "canonical": "#351f1d",
-        "tonalRamp": [
-          "#170505",
-          "#331d1b",
-          "#513936",
-          "#705654",
-          "#917673",
-          "#b39793",
-          "#d7b9b6",
-          "#fbdcd9"
-        ]
+        "tonalRamp": ["#170505", "#331d1b", "#513936", "#705654", "#917673", "#b39793", "#d7b9b6", "#fbdcd9"]
       },
       "amber-partial": {
         "role": "tertiary",
         "displayName": "Amber Partial",
         "canonical": "#e0bd76",
-        "tonalRamp": [
-          "#1d0300",
-          "#3a1c00",
-          "#583900",
-          "#775801",
-          "#997830",
-          "#bb9953",
-          "#dfbc75",
-          "#ffe098"
-        ]
+        "tonalRamp": ["#1d0300", "#3a1c00", "#583900", "#775801", "#997830", "#bb9953", "#dfbc75", "#ffe098"]
       },
       "cancel-border": {
         "role": "tertiary",
         "displayName": "Cancel Border",
         "canonical": "#81564e",
-        "tonalRamp": [
-          "#1e0100",
-          "#3c1711",
-          "#5b332c",
-          "#7c5149",
-          "#9d7068",
-          "#c19188",
-          "#e5b3aa",
-          "#ffd7cd"
-        ]
+        "tonalRamp": ["#1e0100", "#3c1711", "#5b332c", "#7c5149", "#9d7068", "#c19188", "#e5b3aa", "#ffd7cd"]
       },
       "disabled-ink": {
         "role": "neutral",
         "displayName": "Disabled Ink",
         "canonical": "#667366",
-        "tonalRamp": [
-          "#050e05",
-          "#1c271d",
-          "#384338",
-          "#556255",
-          "#748274",
-          "#95a395",
-          "#b7c6b7",
-          "#dbe9db"
-        ]
+        "tonalRamp": ["#050e05", "#1c271d", "#384338", "#556255", "#748274", "#95a395", "#b7c6b7", "#dbe9db"]
       }
     },
     "typographyMeta": {

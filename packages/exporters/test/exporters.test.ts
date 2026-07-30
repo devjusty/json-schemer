@@ -189,9 +189,7 @@ describe("exporters", () => {
     expect(exportBasename("https://example.com/docs/guide", "page", "https://example.com/docs/guide")).toBe(
       "example.com-docs-guide-schema-page",
     );
-    expect(exportBasename("https://example.com/", "page", "https://example.com/")).toBe(
-      "example.com-home-schema-page",
-    );
+    expect(exportBasename("https://example.com/", "page", "https://example.com/")).toBe("example.com-home-schema-page");
     expect(contentDispositionAttachment("example.com-schema-scan", "json")).toBe(
       'attachment; filename="example.com-schema-scan.json"',
     );

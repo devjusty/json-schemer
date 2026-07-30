@@ -56,9 +56,7 @@ describe("HTTP routes", () => {
     const app = await createApp({ repositories, manager: {} as never });
     const response = await app.inject({ method: "GET", url: "/api/scans/scan-1/export/csv" });
     expect(response.statusCode).toBe(200);
-    expect(response.headers["content-disposition"]).toBe(
-      'attachment; filename="example.com-schema-scan.csv"',
-    );
+    expect(response.headers["content-disposition"]).toBe('attachment; filename="example.com-schema-scan.csv"');
     expect(response.headers["content-type"]).toBe("text/csv; charset=utf-8");
     await app.close();
   });

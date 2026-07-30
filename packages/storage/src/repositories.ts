@@ -345,10 +345,9 @@ export function createRepositories(database: DatabaseSync) {
 
     getSiteExportData(scanId: string): SiteExportData {
       const scan = getScan(scanId);
-      const pages = query<Record<string, unknown>>(
-        "SELECT * FROM pages WHERE scan_id = ? ORDER BY url",
-        scanId,
-      ).map(pageFromRow);
+      const pages = query<Record<string, unknown>>("SELECT * FROM pages WHERE scan_id = ? ORDER BY url", scanId).map(
+        pageFromRow,
+      );
       const blocks = query<Record<string, unknown>>(
         `SELECT jsonld_blocks.* FROM jsonld_blocks
          JOIN pages ON pages.id = jsonld_blocks.page_id

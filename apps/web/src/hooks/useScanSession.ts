@@ -77,11 +77,7 @@ export function useScanSession() {
       if (terminal) {
         void getActiveScan()
           .then((active) => {
-            if (
-              generation === scanGeneration.current &&
-              scanRef.current?.id === scanId &&
-              active?.id === scanId
-            ) {
+            if (generation === scanGeneration.current && scanRef.current?.id === scanId && active?.id === scanId) {
               setScan(active);
             }
           })

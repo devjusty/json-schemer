@@ -42,8 +42,7 @@ function parseSettings(value: unknown) {
 }
 
 function formatContentType(format: ExportFormat): string {
-  const base =
-    format === "json" ? "application/json" : format === "markdown" ? "text/markdown" : "text/csv";
+  const base = format === "json" ? "application/json" : format === "markdown" ? "text/markdown" : "text/csv";
   return `${base}; charset=utf-8`;
 }
 
@@ -190,12 +189,7 @@ export async function createApp(dependencies: AppDependencies): Promise<FastifyI
         reply,
         request.params.format,
         () => dependencies.repositories.getPageExportData(request.params.scanId, request.params.pageId),
-        (data) =>
-          exportBasename(
-            data.scan.targetUrl,
-            "page",
-            "page" in data ? data.page.url : data.pages[0]?.page.url,
-          ),
+        (data) => exportBasename(data.scan.targetUrl, "page", "page" in data ? data.page.url : data.pages[0]?.page.url),
       );
     },
   );
