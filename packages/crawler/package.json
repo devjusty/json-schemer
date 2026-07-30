@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@schemer/domain": "workspace:*",
-    "fast-xml-parser": "^5.2.5",
+    "fast-xml-parser": "^5.10.1",
     "ipaddr.js": "^2.2.0"
   }
 }
