@@ -9,6 +9,7 @@
       "!**/.agents",
       "!**/.fallow",
       "!**/.worktrees",
+      "!**/.impeccable/critique",
       "!**/playwright-report",
       "!**/test-results"
     ],

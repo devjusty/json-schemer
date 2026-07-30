@@ -1,4 +1,5 @@
 .worktrees/
+.impeccable/critique/
 node_modules/
 dist/
 .data/
