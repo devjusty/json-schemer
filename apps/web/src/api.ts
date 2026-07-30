@@ -3,6 +3,8 @@ export interface Scan {
   targetUrl: string;
   sitemapUrl?: string | null;
   status: string;
+  createdAt?: string;
+  updatedAt?: string;
   discovered?: number;
   queued?: number;
   completed?: number;

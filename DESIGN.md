@@ -30,37 +30,37 @@ colors:
   disabled-ink: "#667366"
 typography:
   display:
-    fontFamily: "Georgia, serif"
+    fontFamily: '"Source Serif 4 Variable", "Source Serif 4", Georgia, serif'
     fontSize: "clamp(1.75rem, 3.5vw, 2.25rem)"
     fontWeight: 700
     lineHeight: 1.15
     letterSpacing: "-0.03em"
   headline:
-    fontFamily: "Georgia, serif"
+    fontFamily: '"Source Serif 4 Variable", "Source Serif 4", Georgia, serif'
     fontSize: "2rem"
     fontWeight: 700
     lineHeight: 1.1
     letterSpacing: "normal"
   title:
-    fontFamily: "Georgia, serif"
+    fontFamily: '"Source Serif 4 Variable", "Source Serif 4", Georgia, serif'
     fontSize: "1.4rem"
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: "normal"
   metric:
-    fontFamily: "Georgia, serif"
+    fontFamily: '"Source Serif 4 Variable", "Source Serif 4", Georgia, serif'
     fontSize: "1.6rem"
     fontWeight: 700
     lineHeight: 1.1
     letterSpacing: "normal"
   body:
-    fontFamily: "\"Source Sans 3 Variable\", \"Source Sans 3\", ui-sans-serif, system-ui, sans-serif"
+    fontFamily: '"Source Sans 3 Variable", "Source Sans 3", ui-sans-serif, system-ui, sans-serif'
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.5
     letterSpacing: "0.01em"
   ui:
-    fontFamily: "\"Source Sans 3 Variable\", \"Source Sans 3\", ui-sans-serif, system-ui, sans-serif"
+    fontFamily: '"Source Sans 3 Variable", "Source Sans 3", ui-sans-serif, system-ui, sans-serif'
     fontSize: "0.8rem"
     fontWeight: 400
     lineHeight: 1.4
@@ -133,15 +133,15 @@ components:
 
 **Creative North Star: "The Moss Terminal"**
 
-JSON Schemer’s UI is a dense, operational, slightly editorial workspace for local structured-data evidence. It reads like a field terminal grown into moss and parchment: near-black ground, olive panel surfaces, chartreuse as scarce signal, and a Georgia display mark that keeps the brand from feeling like generic SaaS chrome.
+JSON Schemer’s UI is a dense, operational, slightly editorial workspace for local structured-data evidence. It reads like a field terminal grown into moss and parchment: near-black ground, olive panel surfaces, chartreuse as scarce signal, and a Source Serif 4 display mark that keeps the brand from feeling like generic SaaS chrome.
 
-Surfaces stay sharp and instrumental. Borders and tonal layering do the work of depth. Corners stay square. Typography splits labor cleanly: Georgia serif for brand and metrics, self-hosted Source Sans 3 for reading and controls, monospace for labels, status, and JSON. The app shell uses tool-title display scale — not landing-hero billboards. The system rejects SaaS purple, glassmorphism, and rounded marketing cards.
+Surfaces stay sharp and instrumental. Borders and tonal layering do the work of depth. Corners stay square. Typography splits labor cleanly: Source Serif 4 for brand and metrics, self-hosted Source Sans 3 for reading and controls, monospace for labels, status, and JSON. The app shell uses tool-title display scale — not landing-hero billboards. The system rejects SaaS purple, glassmorphism, and rounded marketing cards.
 
 **Key Characteristics:**
 - Dark olive terminal atmosphere with parchment text
 - Square geometry and 1px hairline borders
 - Chartreuse as scarce action/status signal
-- Tripartite type: Georgia / Source Sans 3 / mono
+- Tripartite type: Source Serif 4 / Source Sans 3 / mono
 - Operate-scale product title (capped ~2.25rem), not Persuade display
 - Flat tonal panels; lift reserved for focus and future overlays
 
@@ -187,24 +187,24 @@ A forest-night palette: deep soil backgrounds, moss panels, parchment ink, and a
 
 ## Typography
 
-**Display Font:** Georgia (serif fallback)
+**Display Font:** Source Serif 4 Variable (`@fontsource-variable/source-serif-4`; fallbacks `Source Serif 4`, `Georgia`, `serif`)
 **Body Font:** Source Sans 3 Variable (`@fontsource-variable/source-sans-3`; fallbacks `Source Sans 3`, `ui-sans-serif`, `system-ui`)
 **Label/Mono Font:** `ui-monospace, monospace`
 
 **Character:** Editorial serif for identity and numbers; self-hosted utilitarian sans for controls; mono for machine evidence. Dense tool chrome with a slight literary accent — never a brochure cover.
 
 ### Hierarchy
-- **Display** (700, `clamp(1.75rem, 3.5vw, 2.25rem)`, 1.15, tracking `-0.03em`): Product name in the masthead only (Operate tool-title scale).
-- **Headline** (700, `2rem`, Georgia): Section titles when needed; do not stack with masthead as a second hero.
-- **Title** (700, `1.4rem`, Georgia): Page detail URL heading.
-- **Metric** (700, `1.6–1.7rem`, Georgia): Progress status and count figures.
+- **Display** (700, `clamp(1.75rem, 3.5vw, 2.25rem)`, 1.15, tracking `-0.03em`, Source Serif 4): Product name in the masthead only (Operate tool-title scale).
+- **Headline** (700, `2rem`, Source Serif 4): Section titles when needed; do not stack with masthead as a second hero.
+- **Title** (700, `1.4rem`, Source Serif 4): Page detail URL heading.
+- **Metric** (700, `1.6–1.7rem`, Source Serif 4): Progress status and count figures.
 - **Body** (400, `1rem` / 1.5, Source Sans 3, tracking `0.01em`): Masthead supporting sentence; measure ~42rem.
 - **UI** (400, `0.78–0.8rem`, Source Sans 3): Labels, table cells, summaries, hints.
 - **Label** (700, `0.68–0.7rem`, mono, uppercase, tracking `0.1–0.16em`): Table headers, status chips, partial label, page export meta — not kickers above product titles.
 - **Code** (400, `0.72rem` / 1.5, mono): Raw and parsed JSON-LD blocks.
 
 ### Named Rules
-**The Evidence Type Rule.** Georgia for brand/metrics display; Source Sans 3 for UI body; mono for labels, status, JSON.
+**The Evidence Type Rule.** Source Serif 4 for brand/metrics display; Source Sans 3 for UI body; mono for labels, status, JSON.
 **The Tool-Title Rule.** Masthead product name stays ≤2.25rem. Landing-hero display (multi-rem billboards) belongs off the Operate shell.
 
 ## Layout
@@ -260,10 +260,10 @@ Sharp and instrumental: square hits of chartreuse for commit actions, quiet pane
 - 36×36 grid, 1px Moss Border, Chartreuse Soft “JS”, mono 700, slight rotate (`4°`). Decorative only (`aria-hidden`); brand punctuation, not a control.
 
 ### Signature: Progress Panel
-- Georgia status title left; four Georgia metric figures right with Quiet/Grid Sage captions. No kicker above the status.
+- Source Serif 4 status title left; four Source Serif 4 metric figures right with Quiet/Grid Sage captions. No kicker above the status.
 
 ### Signature: Results Table + Detail
-- Hairline table with mono uppercase headers; selected row wash; status color by outcome. Detail panel stacks eyebrow, Georgia URL title, page export row, and open `<details>` JSON blocks on Code Background.
+- Hairline table with mono uppercase headers; selected row wash; status color by outcome. Detail panel stacks Source Serif 4 URL title, page export row, and open `<details>` JSON blocks on Code Background.
 
 ### Status & Alerts
 - Success/neutral status: Chartreuse Soft mono.
@@ -276,7 +276,7 @@ Sharp and instrumental: square hits of chartreuse for commit actions, quiet pane
 ### Do:
 - **Do** keep corners at `0` and borders at 1px tonal strokes.
 - **Do** spend Chartreuse Signal on primary actions, exports, links, and focus only.
-- **Do** use Georgia for the product name and metric figures; Source Sans 3 for body/controls; mono for labels, status, and JSON.
+- **Do** use Source Serif 4 for the product name and metric figures; Source Sans 3 for body/controls; mono for labels, status, and JSON.
 - **Do** keep the masthead product title at Operate tool scale (`clamp(1.75rem, 3.5vw, 2.25rem)`).
 - **Do** prefer dense operational layout (shell → setup → progress → table/detail) over dashboard card grids.
 - **Do** keep error and partial states in Coral Fault / Amber Partial — never invent a third accent family.
@@ -286,6 +286,6 @@ Sharp and instrumental: square hits of chartreuse for commit actions, quiet pane
 - **Don't** use glassmorphism, heavy multi-layer shadows, or rounded marketing cards.
 - **Don't** round buttons into pills or soft-UI radii.
 - **Don't** flood panel backgrounds with chartreuse fills.
-- **Don't** mix display/body/mono roles (e.g. Georgia for table cells, Source Sans 3 for the product name).
+- **Don't** mix display/body/mono roles (e.g. Source Serif 4 for table cells, Source Sans 3 for the product name).
 - **Don't** restore landing-hero masthead sizes (`clamp` caps above ~2.25rem) or Inter as the UI face.
 - **Don't** put a kicker/eyebrow above the product title.

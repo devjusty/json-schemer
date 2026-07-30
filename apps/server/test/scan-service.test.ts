@@ -71,7 +71,13 @@ describe("scan manager", () => {
     await manager.start({ targetUrl: "https://example.com", sitemapUrl: null, settings: DEFAULT_SCAN_SETTINGS });
     await manager.waitForIdle();
 
-    expect(repositories.getActiveScan()).toMatchObject({ status: "completed", completed: 2, successful: 1, failed: 1 });
+    expect(repositories.getActiveScan()).toMatchObject({
+      status: "completed",
+      completed: 2,
+      successful: 1,
+      failed: 1,
+      sitemapUrl: "https://example.com/sitemap.xml",
+    });
     expect(events.find((event) => event.type === "scan_completed")?.progress).toMatchObject({ status: "completed" });
     expect(
       repositories

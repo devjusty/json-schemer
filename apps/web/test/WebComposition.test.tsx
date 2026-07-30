@@ -12,7 +12,13 @@ afterEach(() => {
   cleanup();
 });
 
-const scan: Scan = { id: "scan-1", targetUrl: "https://example.com", status: "completed" };
+const scan: Scan = {
+  id: "scan-1",
+  targetUrl: "https://example.com",
+  sitemapUrl: "https://example.com/sitemap.xml",
+  status: "completed",
+  updatedAt: "2026-07-30T15:14:00.000Z",
+};
 const page: PageSummary = {
   id: "page-1",
   url: "https://example.com/page",
@@ -52,6 +58,13 @@ describe("web composition components", () => {
     );
 
     expect(screen.getByText("completed", { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText("example.com")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "/sitemap.xml" })).toHaveAttribute(
+      "href",
+      "https://example.com/sitemap.xml",
+    );
+    expect(screen.getByRole("link", { name: "/sitemap.xml" })).toHaveAttribute("target", "_blank");
+    expect(screen.getByText(/Finished /)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Whole-site JSON" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: page.url })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: page.url })).toBeInTheDocument();

@@ -278,6 +278,10 @@ export function createRepositories(database: DatabaseSync) {
         );
     },
 
+    updateScanSitemapUrl(scanId: string, sitemapUrl: string): void {
+      database.prepare("UPDATE scans SET sitemap_url = ?, updated_at = ? WHERE id = ?").run(sitemapUrl, now(), scanId);
+    },
+
     upsertPage(input: PageInput): PageRecord {
       return upsertPage(input);
     },

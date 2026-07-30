@@ -35,8 +35,8 @@ a {
 .masthead h1 {
   margin: 0 0 8px;
   font:
-    700 clamp(1.75rem, 3.5vw, 2.25rem) / 1.15 Georgia,
-    serif;
+    700 clamp(1.75rem, 3.5vw, 2.25rem) / 1.15 "Source Serif 4 Variable", "Source Serif 4",
+    Georgia, serif;
   letter-spacing: -0.03em;
   color: #f4f0e5;
 }
@@ -134,14 +134,34 @@ button:disabled {
   margin-top: 18px;
   padding: 20px 22px;
 }
+.progress-summary {
+  min-width: 0;
+}
 .progress-panel strong {
   display: block;
   margin: 0;
   color: #f4f0e5;
   font:
-    1.6rem Georgia,
+    1.6rem "Source Serif 4 Variable", "Source Serif 4", Georgia,
     serif;
   text-transform: capitalize;
+}
+.progress-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.55rem;
+  margin: 8px 0 0;
+  color: #8c9a8a;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.progress-meta a {
+  color: #d7ef9e;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.progress-meta a:hover {
+  color: #eef8c8;
 }
 .progress-grid {
   display: grid;
@@ -155,7 +175,7 @@ button:disabled {
   display: block;
   color: #d7ef9e;
   font:
-    1.7rem Georgia,
+    1.7rem "Source Serif 4 Variable", "Source Serif 4", Georgia,
     serif;
 }
 .export-bar {
@@ -255,7 +275,7 @@ tr.selected {
   overflow-wrap: anywhere;
   margin: 0 0 4px;
   font:
-    1.4rem Georgia,
+    1.4rem "Source Serif 4 Variable", "Source Serif 4", Georgia,
     serif;
 }
 .page-exports {

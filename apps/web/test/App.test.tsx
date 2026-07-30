@@ -67,4 +67,27 @@ describe("scanner app", () => {
     expect(screen.getByRole("status")).toHaveTextContent(/No scan loaded/);
     expect(screen.getByRole("button", { name: "Start scan" })).toBeInTheDocument();
   });
+
+  it("hydrates website and sitemap fields from the restored active scan", async () => {
+    const { getActiveScan } = await import("../src/api");
+    vi.mocked(getActiveScan).mockResolvedValueOnce({
+      id: "scan-restored",
+      targetUrl: "https://restored.example",
+      sitemapUrl: "https://restored.example/sitemap.xml",
+      status: "completed",
+      updatedAt: "2026-07-30T15:14:00.000Z",
+    });
+
+    render(<App />);
+
+    expect(await screen.findByDisplayValue("https://restored.example")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("https://restored.example/sitemap.xml")).toBeInTheDocument();
+    expect(screen.getByText("completed", { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText("restored.example")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "/sitemap.xml" })).toHaveAttribute(
+      "href",
+      "https://restored.example/sitemap.xml",
+    );
+    expect(screen.getByRole("link", { name: "/sitemap.xml" })).toHaveAttribute("target", "_blank");
+  });
 });

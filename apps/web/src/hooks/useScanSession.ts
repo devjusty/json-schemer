@@ -71,6 +71,22 @@ export function useScanSession() {
       if (event.progress) {
         setScan((current) => (current?.id === scanId ? { ...current, ...event.progress } : current));
       }
+      const terminal =
+        event.type === "scan_completed" ||
+        (event.progress?.status != null && ["completed", "canceled", "failed"].includes(event.progress.status));
+      if (terminal) {
+        void getActiveScan()
+          .then((active) => {
+            if (
+              generation === scanGeneration.current &&
+              scanRef.current?.id === scanId &&
+              active?.id === scanId
+            ) {
+              setScan(active);
+            }
+          })
+          .catch(() => undefined);
+      }
       if (!["page_completed", "scan_completed"].includes(event.type)) return;
       const requestId = ++pageRefreshRequest.current;
       void listPages(scanId)

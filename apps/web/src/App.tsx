@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScanForm } from "./components/ScanForm";
 import { ScanWorkspace } from "./components/ScanWorkspace";
 import { useScanSession } from "./hooks/useScanSession";
@@ -7,7 +7,16 @@ import "./styles.css";
 export function App() {
   const [targetUrl, setTargetUrl] = useState("");
   const [sitemapUrl, setSitemapUrl] = useState("");
+  const [hydratedScanId, setHydratedScanId] = useState<string | null>(null);
   const session = useScanSession();
+
+  useEffect(() => {
+    const active = session.scan;
+    if (!active || hydratedScanId === active.id) return;
+    setTargetUrl(active.targetUrl);
+    setSitemapUrl(active.sitemapUrl ?? "");
+    setHydratedScanId(active.id);
+  }, [session.scan, hydratedScanId]);
 
   return (
     <main className="shell">

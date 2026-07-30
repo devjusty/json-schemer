@@ -112,6 +112,8 @@ export class ScanManager {
       completed: scan.completed,
       successful: scan.successful,
       failed: scan.failed,
+      sitemapUrl: scan.sitemapUrl,
+      updatedAt: scan.updatedAt,
     };
   }
 
@@ -135,6 +137,12 @@ export class ScanManager {
         maxResponseBytes: input.settings.maxResponseBytes,
       });
       if (this.canceledRuns.has(scanId)) return;
+      if (!input.sitemapUrl) {
+        const discoveredSitemap = discovery.urls.map((entry) => entry.source).find((source) => source.length > 0);
+        if (discoveredSitemap) {
+          this.dependencies.repositories.updateScanSitemapUrl(scanId, discoveredSitemap);
+        }
+      }
       const urls = filterSitemapUrls(
         discovery.urls.map((entry) => entry.url),
         target,

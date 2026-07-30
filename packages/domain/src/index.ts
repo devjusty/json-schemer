@@ -43,4 +43,6 @@ export interface ScanProgress {
   completed: number;
   successful: number;
   failed: number;
+  sitemapUrl?: string | null;
+  updatedAt?: string;
 }

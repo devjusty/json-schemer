@@ -520,12 +520,12 @@
   ],
   "narrative": {
     "northStar": "The Moss Terminal",
-    "overview": "JSON Schemer\u2019s UI is a dense, operational, slightly editorial workspace for local structured-data evidence. It reads like a field terminal grown into moss and parchment: near-black ground, olive panel surfaces, chartreuse as scarce signal, and a Georgia display mark that keeps the brand from feeling like generic SaaS chrome.\n\nSurfaces stay sharp and instrumental. Borders and tonal layering do the work of depth. Corners stay square. Typography splits labor cleanly: Georgia serif for brand and metrics, self-hosted Source Sans 3 for reading and controls, monospace for labels, status, and JSON. The system rejects SaaS purple, glassmorphism, and rounded marketing cards.",
+    "overview": "JSON Schemer\u2019s UI is a dense, operational, slightly editorial workspace for local structured-data evidence. It reads like a field terminal grown into moss and parchment: near-black ground, olive panel surfaces, chartreuse as scarce signal, and a Source Serif 4 display mark that keeps the brand from feeling like generic SaaS chrome.\n\nSurfaces stay sharp and instrumental. Borders and tonal layering do the work of depth. Corners stay square. Typography splits labor cleanly: Source Serif 4 for brand and metrics, self-hosted Source Sans 3 for reading and controls, monospace for labels, status, and JSON. The system rejects SaaS purple, glassmorphism, and rounded marketing cards.",
     "keyCharacteristics": [
       "Dark olive terminal atmosphere with parchment text",
       "Square geometry and 1px hairline borders",
       "Chartreuse as scarce action/status signal",
-      "Tripartite type: Georgia / Source Sans 3 / mono",
+      "Tripartite type: Source Serif 4 / Source Sans 3 / mono",
       "Operate-scale product title (capped ~2.25rem), not Persuade display",
       "Flat tonal panels; lift reserved for focus and future overlays"
     ],
@@ -537,7 +537,7 @@
       },
       {
         "name": "The Evidence Type Rule",
-        "body": "Georgia for brand/metrics display; Source Sans 3 for UI body; mono for labels, status, JSON.",
+        "body": "Source Serif 4 for brand/metrics display; Source Sans 3 for UI body; mono for labels, status, JSON.",
         "section": "typography"
       },
       {
@@ -554,7 +554,7 @@
     "dos": [
       "Do keep corners at 0 and borders at 1px tonal strokes.",
       "Do spend Chartreuse Signal on primary actions, exports, links, and focus only.",
-      "Do use Georgia for the product name and metric figures; Source Sans 3 for body/controls; mono for labels, status, and JSON.",
+      "Do use Source Serif 4 for the product name and metric figures; Source Sans 3 for body/controls; mono for labels, status, and JSON.",
       "Do prefer dense operational layout (shell \u2192 setup \u2192 progress \u2192 table/detail) over dashboard card grids.",
       "Do keep error and partial states in Coral Fault / Amber Partial \u2014 never invent a third accent family."
     ],
@@ -563,7 +563,7 @@
       "Don\u2019t use glassmorphism, heavy multi-layer shadows, or rounded marketing cards.",
       "Don\u2019t round buttons into pills or soft-UI radii.",
       "Don\u2019t flood panel backgrounds with chartreuse fills.",
-      "Don\u2019t mix display/body/mono roles (e.g. Georgia for table cells, Source Sans 3 for the product name).",
+      "Don\u2019t mix display/body/mono roles (e.g. Source Serif 4 for table cells, Source Sans 3 for the product name).",
       "Don't restore landing-hero masthead sizes or put a kicker above the product title."
     ]
   }
