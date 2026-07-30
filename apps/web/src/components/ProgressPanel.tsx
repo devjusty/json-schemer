@@ -4,7 +4,6 @@ export function ProgressPanel({ scan }: { scan: Scan }) {
   return (
     <section className="progress-panel" aria-label="Scan progress">
       <div>
-        <span className="eyebrow">Current scan</span>
         <strong>{scan.status === "queued" ? "Scan queued" : scan.status}</strong>
       </div>
       <div className="progress-grid">

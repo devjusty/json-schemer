@@ -64,7 +64,7 @@ describe("scanner app", () => {
 
   it("renders distinct empty state before a scan", () => {
     render(<App />);
-    expect(screen.getByText("No scan loaded")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(/No scan loaded/);
     expect(screen.getByRole("button", { name: "Start scan" })).toBeInTheDocument();
   });
 });

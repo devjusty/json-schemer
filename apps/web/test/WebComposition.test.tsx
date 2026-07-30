@@ -54,7 +54,7 @@ describe("web composition components", () => {
     expect(screen.getByText("completed", { selector: "strong" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Whole-site JSON" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: page.url })).toBeInTheDocument();
-    expect(screen.getByText("Page detail")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: page.url })).toBeInTheDocument();
   });
 
   it("composes page table and detail selection", () => {
@@ -64,7 +64,7 @@ describe("web composition components", () => {
     fireEvent.click(screen.getByRole("button", { name: page.url }));
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onSelect).toHaveBeenCalledWith(page.id);
-    expect(screen.getByText("Page detail")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: page.url })).toBeInTheDocument();
   });
 
   it("selects row once when page link is clicked", () => {

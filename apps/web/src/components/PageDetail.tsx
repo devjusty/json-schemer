@@ -23,7 +23,6 @@ export function PageDetail({
 
   return (
     <aside className="detail-panel">
-      <span className="eyebrow">Page detail</span>
       <h2>{detail.page.url}</h2>
       <p className="muted">
         {detail.page.status} · {detail.blocks.length} JSON-LD blocks

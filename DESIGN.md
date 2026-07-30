@@ -31,10 +31,10 @@ colors:
 typography:
   display:
     fontFamily: "Georgia, serif"
-    fontSize: "clamp(3rem, 8vw, 7rem)"
+    fontSize: "clamp(1.75rem, 3.5vw, 2.25rem)"
     fontWeight: 700
-    lineHeight: 0.9
-    letterSpacing: "-0.07em"
+    lineHeight: 1.15
+    letterSpacing: "-0.03em"
   headline:
     fontFamily: "Georgia, serif"
     fontSize: "2rem"
@@ -54,13 +54,13 @@ typography:
     lineHeight: 1.1
     letterSpacing: "normal"
   body:
-    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.05rem"
+    fontFamily: "\"Source Sans 3 Variable\", \"Source Sans 3\", ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1rem"
     fontWeight: 400
-    lineHeight: 1.45
-    letterSpacing: "normal"
+    lineHeight: 1.5
+    letterSpacing: "0.01em"
   ui:
-    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "\"Source Sans 3 Variable\", \"Source Sans 3\", ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.8rem"
     fontWeight: 400
     lineHeight: 1.4
@@ -124,7 +124,7 @@ components:
     backgroundColor: "transparent"
     textColor: "{colors.chartreuse-soft}"
     rounded: "{rounded.none}"
-    size: "64px"
+    size: "36px"
 ---
 
 # Design System: JSON Schemer
@@ -135,13 +135,14 @@ components:
 
 JSON Schemer’s UI is a dense, operational, slightly editorial workspace for local structured-data evidence. It reads like a field terminal grown into moss and parchment: near-black ground, olive panel surfaces, chartreuse as scarce signal, and a Georgia display mark that keeps the brand from feeling like generic SaaS chrome.
 
-Surfaces stay sharp and instrumental. Borders and tonal layering do the work of depth. Corners stay square. Typography splits labor cleanly: serif for brand and metrics, Inter for reading and controls, monospace for labels, status, and JSON. The system rejects SaaS purple, glassmorphism, and rounded marketing cards.
+Surfaces stay sharp and instrumental. Borders and tonal layering do the work of depth. Corners stay square. Typography splits labor cleanly: Georgia serif for brand and metrics, self-hosted Source Sans 3 for reading and controls, monospace for labels, status, and JSON. The app shell uses tool-title display scale — not landing-hero billboards. The system rejects SaaS purple, glassmorphism, and rounded marketing cards.
 
 **Key Characteristics:**
 - Dark olive terminal atmosphere with parchment text
 - Square geometry and 1px hairline borders
 - Chartreuse as scarce action/status signal
-- Tripartite type: Georgia / Inter / mono
+- Tripartite type: Georgia / Source Sans 3 / mono
+- Operate-scale product title (capped ~2.25rem), not Persuade display
 - Flat tonal panels; lift reserved for focus and future overlays
 
 ## Colors
@@ -187,27 +188,28 @@ A forest-night palette: deep soil backgrounds, moss panels, parchment ink, and a
 ## Typography
 
 **Display Font:** Georgia (serif fallback)
-**Body Font:** Inter (`ui-sans-serif, system-ui, sans-serif`)
+**Body Font:** Source Sans 3 Variable (`@fontsource-variable/source-sans-3`; fallbacks `Source Sans 3`, `ui-sans-serif`, `system-ui`)
 **Label/Mono Font:** `ui-monospace, monospace`
 
-**Character:** Editorial serif for identity and numbers; utilitarian sans for controls; mono for machine evidence. Dense and slightly literary without becoming a brochure.
+**Character:** Editorial serif for identity and numbers; self-hosted utilitarian sans for controls; mono for machine evidence. Dense tool chrome with a slight literary accent — never a brochure cover.
 
 ### Hierarchy
-- **Display** (700, `clamp(3rem, 8vw, 7rem)`, 0.9, tracking `-0.07em`): Product name in the masthead only.
-- **Headline** (700, `2rem`, Georgia): Empty-state hero titles.
+- **Display** (700, `clamp(1.75rem, 3.5vw, 2.25rem)`, 1.15, tracking `-0.03em`): Product name in the masthead only (Operate tool-title scale).
+- **Headline** (700, `2rem`, Georgia): Section titles when needed; do not stack with masthead as a second hero.
 - **Title** (700, `1.4rem`, Georgia): Page detail URL heading.
 - **Metric** (700, `1.6–1.7rem`, Georgia): Progress status and count figures.
-- **Body** (400, `1.05rem`, Inter): Masthead supporting sentence; max width ~500px.
-- **UI** (400, `0.78–0.8rem`, Inter): Labels, table cells, summaries, hints.
-- **Label** (700, `0.68–0.7rem`, mono, uppercase, tracking `0.1–0.16em`): Eyebrows, table headers, status chips, partial label, page export meta.
+- **Body** (400, `1rem` / 1.5, Source Sans 3, tracking `0.01em`): Masthead supporting sentence; measure ~42rem.
+- **UI** (400, `0.78–0.8rem`, Source Sans 3): Labels, table cells, summaries, hints.
+- **Label** (700, `0.68–0.7rem`, mono, uppercase, tracking `0.1–0.16em`): Table headers, status chips, partial label, page export meta — not kickers above product titles.
 - **Code** (400, `0.72rem` / 1.5, mono): Raw and parsed JSON-LD blocks.
 
 ### Named Rules
-**The Evidence Type Rule.** Georgia for brand/metrics display; Inter for UI body; mono for labels, status, JSON.
+**The Evidence Type Rule.** Georgia for brand/metrics display; Source Sans 3 for UI body; mono for labels, status, JSON.
+**The Tool-Title Rule.** Masthead product name stays ≤2.25rem. Landing-hero display (multi-rem billboards) belongs off the Operate shell.
 
 ## Layout
 
-Centered shell: `min(1400px, calc(100% - 48px))`, vertical padding `42px / 72px`. Masthead is a two-column flex with brand block and rotated mark. Setup form is a three-column grid (`1.3fr 1fr auto`) collapsing to one column below `850px`. After a scan starts, progress sits full-width; results use a two-column grid (`1.4fr / 0.8fr`, detail min `320px`) stacking on small screens. Progress metrics use a four-up auto grid, two-up on mobile. Spacing rhythm clusters around 8 / 10 / 14 / 18 / 22 / 28 / 42px. Density is high: operational information first, little decorative air.
+Centered shell: `min(1400px, calc(100% - 48px))`, vertical padding `28px / 64px`. Masthead is a compact two-column flex (brand block + mark) with `18px` below into the setup form — the form must clear into the first half of a typical laptop viewport. Setup form is a three-column grid (`1.3fr 1fr auto`) collapsing to one column below `850px`. After a scan starts, progress sits full-width; results use a two-column grid (`1.4fr / 0.8fr`, detail min `320px`) stacking on small screens. Progress metrics use a four-up auto grid, two-up on mobile. Spacing rhythm clusters around 8 / 10 / 14 / 18 / 22 / 28px. Density is high: operational information first, little decorative air.
 
 ## Elevation & Depth
 
@@ -222,7 +224,7 @@ Flat by default. Depth comes from tonal panel fills (`rgba(25, 31, 26, 0.82)`), 
 
 ## Shapes
 
-Square everywhere. Borders are 1px solid strokes in panel/field greens. The signature silhouette is the 64×64 rotated (`8deg`) mark badge with a moss border. Error banners use a 3px left accent bar instead of rounded callouts. Tables are hairline-ruled, not card stacks.
+- Borders are 1px solid strokes in panel/field greens. Error banners use a full 1px Coral Fault border on Fault Surface — never a thick side accent. The signature silhouette is the compact rotated mark badge. Tables are hairline-ruled, not card stacks.
 
 ### Named Rules
 **The Zero-Radius Rule.** Corners stay square (`0`); no pill buttons or marketing card radii.
@@ -255,10 +257,10 @@ Sharp and instrumental: square hits of chartreuse for commit actions, quiet pane
 - No global app nav. Local export bar acts as a utility strip: muted “Export site” label, optional Amber Partial badge, chartreuse format links or disabled chips, cancel trailing right.
 
 ### Signature: Mark Badge
-- 64×64 grid, 1px Moss Border, Chartreuse Soft “JS”, mono 700, rotated 8°. Brand punctuation, not a functional control.
+- 36×36 grid, 1px Moss Border, Chartreuse Soft “JS”, mono 700, slight rotate (`4°`). Decorative only (`aria-hidden`); brand punctuation, not a control.
 
 ### Signature: Progress Panel
-- Eyebrow + Georgia status title left; four Georgia metric figures right with Quiet/Grid Sage captions.
+- Georgia status title left; four Georgia metric figures right with Quiet/Grid Sage captions. No kicker above the status.
 
 ### Signature: Results Table + Detail
 - Hairline table with mono uppercase headers; selected row wash; status color by outcome. Detail panel stacks eyebrow, Georgia URL title, page export row, and open `<details>` JSON blocks on Code Background.
@@ -267,14 +269,15 @@ Sharp and instrumental: square hits of chartreuse for commit actions, quiet pane
 - Success/neutral status: Chartreuse Soft mono.
 - HTTP/fetch/invalid JSON-LD: Coral Fault.
 - No JSON-LD: Amber Partial.
-- Error banner: Fault Surface, Coral Ink, 3px Coral Fault left bar.
+- Error banner: Fault Surface, Coral Ink, 1px Coral Fault border (no thick side-tab accent).
 
 ## Do's and Don'ts
 
 ### Do:
 - **Do** keep corners at `0` and borders at 1px tonal strokes.
 - **Do** spend Chartreuse Signal on primary actions, exports, links, and focus only.
-- **Do** use Georgia for the product name and metric figures; Inter for body/controls; mono for labels, status, and JSON.
+- **Do** use Georgia for the product name and metric figures; Source Sans 3 for body/controls; mono for labels, status, and JSON.
+- **Do** keep the masthead product title at Operate tool scale (`clamp(1.75rem, 3.5vw, 2.25rem)`).
 - **Do** prefer dense operational layout (shell → setup → progress → table/detail) over dashboard card grids.
 - **Do** keep error and partial states in Coral Fault / Amber Partial — never invent a third accent family.
 
@@ -283,4 +286,6 @@ Sharp and instrumental: square hits of chartreuse for commit actions, quiet pane
 - **Don't** use glassmorphism, heavy multi-layer shadows, or rounded marketing cards.
 - **Don't** round buttons into pills or soft-UI radii.
 - **Don't** flood panel backgrounds with chartreuse fills.
-- **Don't** mix display/body/mono roles (e.g. Georgia for table cells, Inter for the product name).
+- **Don't** mix display/body/mono roles (e.g. Georgia for table cells, Source Sans 3 for the product name).
+- **Don't** restore landing-hero masthead sizes (`clamp` caps above ~2.25rem) or Inter as the UI face.
+- **Don't** put a kicker/eyebrow above the product title.

@@ -13,11 +13,12 @@ export function App() {
     <main className="shell">
       <header className="masthead">
         <div>
-          <span className="eyebrow">LOCAL CRAWLER / STRUCTURED DATA</span>
           <h1>JSON Schemer</h1>
           <p>Scan sitemap pages. See every JSON-LD block. Export clean evidence for review.</p>
         </div>
-        <div className="mark">JS</div>
+        <div className="mark" aria-hidden="true">
+          JS
+        </div>
       </header>
       <section className="setup-card">
         <ScanForm
@@ -36,11 +37,9 @@ export function App() {
         </div>
       )}
       {!session.scan && (
-        <section className="empty-panel hero-empty">
-          <span className="eyebrow">Ready when you are</span>
-          <h2>No scan loaded</h2>
-          <p>Enter website URL to begin. Results stay local on this machine.</p>
-        </section>
+        <p className="idle-status" role="status">
+          No scan loaded — enter a website URL above. Results stay on this machine.
+        </p>
       )}
       {session.scan && (
         <ScanWorkspace
