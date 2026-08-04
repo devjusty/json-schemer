@@ -4,6 +4,8 @@ Local sitemap scanner for JSON-LD structured data. Scan a website and export inf
 
 JSON Schemer discovers sitemap URLs, fetches pages, extracts JSON-LD blocks and Schema.org entities, and presents page-level results in a local web UI.
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/devjusty/json-schemer)
+
 ## Features
 
 - Discover sitemaps from `robots.txt` or scan a supplied sitemap URL directly.
