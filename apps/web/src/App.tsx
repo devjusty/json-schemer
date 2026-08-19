@@ -21,7 +21,19 @@ export function App() {
 
   return (
     <>
-      <Toaster />
+      <Toaster
+        theme="dark"
+        closeButton
+        toastOptions={{
+          unstyled: true,
+          classNames: {
+            toast: "schemer-toast",
+            title: "schemer-toast-title",
+            description: "schemer-toast-description",
+            closeButton: "schemer-toast-close",
+          },
+        }}
+      />
       <main className="shell">
         <header className="masthead">
           <div>

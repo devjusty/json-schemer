@@ -440,6 +440,51 @@ pre {
   color: #8c9a8a;
   font-size: 0.8125rem;
 }
+/* ---- Sonner toasts (unstyled, custom design) ---- */
+.schemer-toast {
+  background: #101611;
+  border: 1px solid #354139;
+  color: #e9e6dc;
+  font-family: "Source Sans 3 Variable", "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  border-radius: 0;
+  padding: 14px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.schemer-toast[data-type="success"] {
+  border-color: #718c58;
+}
+.schemer-toast[data-type="error"] {
+  border-color: #9d5244;
+}
+.schemer-toast[data-type="warning"] {
+  border-color: #9a855a;
+}
+.schemer-toast-title {
+  color: #f4f0e5;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.schemer-toast-description {
+  color: #a6afa3;
+  font-size: 0.78rem;
+  margin-top: 2px;
+}
+.schemer-toast-close {
+  color: #8c9a8a;
+}
+/* Icon colors per type — Sonner SVG icons use currentColor */
+.schemer-toast[data-type="success"] svg,
+.schemer-toast[data-type="info"] svg {
+  color: #d7ef9e;
+}
+.schemer-toast[data-type="error"] svg {
+  color: #ef9277;
+}
+.schemer-toast[data-type="warning"] svg {
+  color: #e0bd76;
+}
 /* ---- Motion: transitions + reduced-motion + fine-hover gating ---- */
 button,
 .export-bar a,
