@@ -326,12 +326,15 @@ th {
   overflow: hidden;
   border-radius: 0;
 }
-.detail-panel h2 {
+.detail-header {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  overflow-wrap: anywhere;
   margin: 0 0 4px;
+}
+.detail-panel h2 {
+  overflow-wrap: anywhere;
+  margin: 0;
   font:
     1.4rem "Source Serif 4 Variable",
     "Source Serif 4",

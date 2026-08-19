@@ -26,8 +26,8 @@ export function PageDetail({
 
   return (
     <aside className="detail-panel">
-      <h2>
-        {detail.page.url}
+      <div className="detail-header">
+        <h2>{detail.page.url}</h2>
         <a
           href={detail.page.url}
           target="_blank"
@@ -44,7 +44,7 @@ export function PageDetail({
             aria-hidden="true"
           >
             <path
-              d="M9.5 1H12.5C12.7761 1 13 1.22386 13 1.5V4.5M13 4.5L9.5 0.999999L13 4.5ZM13 4.5V9.5C13 10.3284 12.3284 11 11.5 11H2.5C1.67157 11 1 10.3284 1 9.5V2.5C1 1.67157 1.67157 1 2.5 1H9.5"
+              d="M9.5 1H12.5C12.7761 1 13 1.22386 13 1.5V4.5M13 4.5L9.5 0.999999L13 4.5ZM13 4.5V9.5C13 10.3284 12.3284 11 11.5 11H2.5C1.67157 11 1 1.67157 1 2.5 1H9.5"
               stroke="currentColor"
               strokeWidth="1.5"
               strokeLinecap="round"
@@ -53,7 +53,7 @@ export function PageDetail({
           </svg>
           <span className="sr-only">Open in new tab</span>
         </a>
-      </h2>
+      </div>
       <p className="muted">
         {pageStatusLabel(detail.page.status)} · {detail.blocks.length} JSON-LD blocks
       </p>

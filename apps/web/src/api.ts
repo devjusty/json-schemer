@@ -10,6 +10,7 @@ export interface Scan {
   completed?: number;
   successful?: number;
   failed?: number;
+  error?: string | null;
 }
 
 export interface PageSummary {
@@ -67,9 +68,10 @@ export function cancelScan(scanId: string): Promise<Scan> {
 
 export function subscribeToScan(
   scanId: string,
-  onEvent: (event: { type: string; progress?: Partial<Scan> }) => void,
+  onEvent: (event: { type: string; progress?: Partial<Scan>; message?: string }) => void,
 ): () => void {
   const source = new EventSource(`/api/scans/${encodeURIComponent(scanId)}/events`);
-  source.onmessage = (message) => onEvent(JSON.parse(message.data) as { type: string; progress?: Partial<Scan> });
+  source.onmessage = (message) =>
+    onEvent(JSON.parse(message.data) as { type: string; progress?: Partial<Scan>; message?: string });
   return () => source.close();
 }

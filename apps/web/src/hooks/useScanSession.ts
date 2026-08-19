@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   cancelScan as cancelScanRequest,
   createScan,
@@ -10,6 +11,8 @@ import {
   type Scan,
   subscribeToScan,
 } from "../api";
+
+const SCAN_TOAST_ID = "scan-lifecycle";
 
 function messageFrom(cause: unknown): string {
   return cause instanceof Error ? cause.message : String(cause);
@@ -75,6 +78,24 @@ export function useScanSession() {
         event.type === "scan_completed" ||
         (event.progress?.status != null && ["completed", "canceled", "failed"].includes(event.progress.status));
       if (terminal) {
+        const status = event.progress?.status;
+        const progress = event.progress;
+        if (status === "completed") {
+          toast.success("Scan complete", {
+            id: SCAN_TOAST_ID,
+            description:
+              progress?.discovered != null && progress.discovered > 0
+                ? `${progress.completed ?? 0} of ${progress.discovered} pages processed`
+                : undefined,
+          });
+        } else if (status === "failed" || event.type === "scan_error") {
+          toast.error("Scan failed", {
+            id: SCAN_TOAST_ID,
+            description: event.message ?? "An error occurred during the scan",
+          });
+        } else if (status === "canceled") {
+          toast("Scan canceled", { id: SCAN_TOAST_ID });
+        }
         void getActiveScan()
           .then((active) => {
             if (generation === scanGeneration.current && scanRef.current?.id === scanId && active?.id === scanId) {
@@ -121,8 +142,13 @@ export function useScanSession() {
       if (generation !== scanGeneration.current) return;
       setScan(created);
       setPages([]);
+      toast.loading("Scanning…", { id: SCAN_TOAST_ID });
     } catch (cause) {
-      if (generation === scanGeneration.current) setError(messageFrom(cause));
+      if (generation === scanGeneration.current) {
+        const msg = messageFrom(cause);
+        setError(msg);
+        toast.error("Scan could not start", { description: msg });
+      }
     } finally {
       setBusy(false);
     }
@@ -139,7 +165,11 @@ export function useScanSession() {
       const canceled = await cancelScanRequest(scanId);
       if (generation === scanGeneration.current && scanRef.current?.id === scanId) setScan(canceled);
     } catch (cause) {
-      if (generation === scanGeneration.current && scanRef.current?.id === scanId) setError(messageFrom(cause));
+      if (generation === scanGeneration.current && scanRef.current?.id === scanId) {
+        const msg = messageFrom(cause);
+        setError(msg);
+        toast.error("Could not cancel scan", { description: msg });
+      }
     } finally {
       if (requestId === cancelRequestRef.current.get(scanId)) {
         cancelRequestRef.current.delete(scanId);
@@ -171,8 +201,10 @@ export function useScanSession() {
         generation === scanGeneration.current &&
         scanRef.current?.id === scanId
       ) {
+        const msg = messageFrom(cause);
         setSelectedId(previousId);
-        setError(messageFrom(cause));
+        setError(msg);
+        toast.error("Could not load page details", { description: msg });
       }
     } finally {
       if (requestId === selectionRequest.current) setSelectBusy(false);
