@@ -26,7 +26,10 @@ const detail: PageDetailData = {
     { id: "block-1", ordinal: 1, rawText: '{"broken":', parsed: null, parseError: "Unexpected end" },
     { id: "block-2", ordinal: 2, rawText: '{"@type":"Thing"}', parsed: { "@type": "Thing" }, parseError: null },
   ],
-  entities: [],
+  entities: [
+    { id: "entity-1", blockId: "block-2", context: "https://schema.org", types: ["WebPage"], serialized: "{}" },
+    { id: "entity-2", blockId: "block-2", context: "https://schema.org", types: ["Organization"], serialized: "{}" },
+  ],
 };
 
 describe("PageDetail", () => {
@@ -77,5 +80,25 @@ describe("PageDetail", () => {
     expect(screen.getByRole("button", { name: "Copied JSON-LD block 2" })).toBeInTheDocument();
     act(() => vi.advanceTimersByTime(1000));
     expect(screen.getByRole("button", { name: "Copy JSON-LD block 2" })).toBeInTheDocument();
+  });
+
+  it("renders schema type pills for extracted entities", () => {
+    render(<PageDetail detail={detail} scanId="scan-1" scanStatus="completed" />);
+
+    const pills = screen.getAllByText(/WebPage|Organization/);
+    expect(pills).toHaveLength(2);
+    expect(pills[0]).toHaveClass("schema-type-pill");
+    expect(pills[1]).toHaveClass("schema-type-pill");
+  });
+
+  it("does not render schema type pills when no entities", () => {
+    const detailNoEntities: PageDetailData = {
+      ...detail,
+      entities: [],
+    };
+    render(<PageDetail detail={detailNoEntities} scanId="scan-1" scanStatus="completed" />);
+
+    expect(screen.queryByText(/WebPage/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Organization/)).not.toBeInTheDocument();
   });
 });
