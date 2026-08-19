@@ -23,7 +23,7 @@ export function App() {
       <header className="masthead">
         <div>
           <h1>JSON Schemer</h1>
-          <p>Scan sitemap pages. See every JSON-LD block. Export clean evidence for review.</p>
+          <p>Scan sitemap pages, inspect JSON-LD blocks, and export what the crawl found.</p>
         </div>
         <div className="mark" aria-hidden="true">
           JS
@@ -39,8 +39,7 @@ export function App() {
           onSubmit={() => void session.startScan(targetUrl, sitemapUrl)}
         />
         <p className="hint">
-          Sitemap is optional; leave blank to discover it from robots.txt. Balanced crawl · same-origin only · up to 500
-          URLs · no JavaScript execution
+          Leave sitemap blank to read it from robots.txt. Same-origin, 500 URLs max, no JavaScript execution
         </p>
       </section>
       {session.error && (
@@ -50,7 +49,7 @@ export function App() {
       )}
       {!session.scan && (
         <p className="idle-status" role="status">
-          No scan loaded — enter a website URL above. Results stay on this machine.
+          No scan loaded. Enter a website URL above. Results stay on this machine.
         </p>
       )}
       {session.scan && (

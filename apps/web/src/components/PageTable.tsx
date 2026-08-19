@@ -10,7 +10,7 @@ export function PageTable({
   selectedId: string | null;
   onSelect: (id: string) => void;
 }) {
-  if (pages.length === 0) return <div className="empty-panel">Pages appear here as crawl completes.</div>;
+  if (pages.length === 0) return <div className="empty-panel">Pages show up as the crawl finishes.</div>;
   return (
     <div className="table-wrap">
       <table>

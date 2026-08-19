@@ -8,7 +8,7 @@ web
 
 ## Users
 
-Primary users are SEO specialists, engineers, and agents auditing or improving a site's JSON-LD / Schema.org markup. They typically work from a local machine against a public site (or a known sitemap), need page-level evidence of what structured data is present, and may hand exports to humans or other agents for further review.
+SEO specialists, engineers, and agents audit or improve a site's JSON-LD / Schema.org markup. You run it on your machine against a public site or a known sitemap. You need page-level proof of the structured data, and you may pass exports to another person or agent.
 
 Secondary audiences are marketers and managers who consume scan results or exports rather than running the crawl themselves.
 
@@ -16,11 +16,11 @@ Secondary audiences are marketers and managers who consume scan results or expor
 
 JSON Schemer is a local sitemap scanner for JSON-LD structured data. It discovers sitemap URLs, fetches pages, extracts JSON-LD blocks and Schema.org entities, presents page-level results in a local web UI, and exports site or page evidence as JSON, Markdown, or CSV so humans or agents can audit and improve schemas.
 
-Success means: a user (or agent) can start from a website or sitemap URL, watch a bounded crawl complete, inspect what was found per page, and leave with trustworthy export artifacts without sending crawl data to a third-party hosted SEO product.
+You start from a website or sitemap URL, watch a bounded crawl finish, inspect each page, and leave with export files. Crawl data stays on your machine.
 
 ## Positioning
 
-Local-first, crawl-safe evidence for humans and agents — not a hosted SEO suite. Neighboring cloud SEO or schema tools cannot truthfully claim the same combination of on-machine SQLite storage, no downloaded JavaScript execution, same-origin/robots-bounded crawling, and exports shaped for both human review and agent audit skills.
+JSON Schemer runs on your machine, stores results in local SQLite, skips downloaded JavaScript, stays same-origin and robots-bounded, and writes exports humans and agents can audit.
 
 ## Operating Context
 
@@ -49,7 +49,7 @@ Hard constraints to preserve:
 - Default: same-origin only, `robots.txt` enforced, max 500 URLs, bounded concurrency/rate limits
 - Scan data stays on the local machine
 
-Undecided (early project — deliberately open):
+Undecided:
 
 - Brand identity beyond the product name and current UI copy
 - Accessibility standard beyond sensible defaults
@@ -70,8 +70,8 @@ Do not fabricate testimonials, customer names, benchmarks, pricing, or rich-resu
 
 ## Product Principles
 
-1. Evidence over opinion — show what was crawled and extracted; do not claim search eligibility from local exports alone.
-2. Local and bounded — keep data on-machine; respect robots, origin, and crawl safety limits.
-3. Dual audience — UI for specialists and engineers; exports and skills for agents.
-4. Replaceable early identity — product truth outranks any temporary visual system while the project is young.
-5. Honest scope — one active scan, clear cancel/replace semantics, no invented social proof.
+1. Show what the crawl extracted. Leave Google eligibility to a validator on the live page.
+2. Keep data on the machine. Respect robots, origin, and the URL cap.
+3. Ship a UI for people and exports for agents.
+4. Product truth outranks any temporary visual system while the project is young.
+5. One active scan. Cancel keeps partial results. A new scan replaces the old one.

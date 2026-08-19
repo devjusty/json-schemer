@@ -30,7 +30,7 @@ pnpm dev
 
 The command starts API server on `http://127.0.0.1:4317` and opens Vite UI on `http://127.0.0.1:5173`.
 
-SQLite data lives at `.data/scan.db`. Starting a scan replaces previous scan data. MVP caps scans at 500 same-origin URLs, respects `robots.txt`, uses bounded concurrency/rate limits, rejects local/private targets, and never executes downloaded JavaScript.
+SQLite lives at `.data/scan.db`. A new scan replaces the previous one. Defaults: 500 same-origin URLs, `robots.txt`, bounded concurrency and rate limits, no local or private targets, no JavaScript execution.
 
 ## Using The Scanner
 
@@ -143,7 +143,7 @@ CI blocks Fallow dead-code, dependency, and import-graph regressions. Complexity
 
 ## Architecture
 
-The server creates the SQLite database, wires crawler and extractor dependencies into `ScanManager`, and exposes the scan API through Fastify. The web app talks to that API through relative `/api` requests. Scan events are streamed over Server-Sent Events so the UI can update without polling.
+You start the Fastify process. It opens SQLite, constructs `ScanManager`, and serves `/api`. The browser calls those routes over relative `/api` URLs. The UI subscribes to Server-Sent Events and updates without polling.
 
 The workspace packages keep responsibilities separate:
 

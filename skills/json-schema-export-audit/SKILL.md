@@ -5,8 +5,8 @@ description: Audit JSON Schemer exports and scan artifacts for data integrity an
 
 # Export Audit
 
-Audit supplied JSON Schemer artifacts. Focus on evidence, not assumptions:
-determine what each artifact contains, validate what can be validated, and mark
+Audit supplied JSON Schemer artifacts. Work from the files in front of you.
+Determine what each artifact contains, validate what can be validated, and mark
 unavailable checks explicitly.
 
 ## Before auditing

@@ -248,7 +248,7 @@
       "kind": "custom",
       "refersTo": null,
       "description": "Quiet idle status line before a scan starts.",
-      "html": "<p class=\"ds-idle\" role=\"status\">No scan loaded \u2014 enter a website URL above. Results stay on this machine.</p>",
+      "html": "<p class=\"ds-idle\" role=\"status\">No scan loaded. Enter a website URL above. Results stay on this machine.</p>",
       "css": ".ds-idle { margin: 0; color: #8c9a8a; font: 400 0.9rem/1.45 \"Source Sans 3 Variable\", \"Source Sans 3\", ui-sans-serif, system-ui, sans-serif; }"
     },
     {
