@@ -1,32 +1,14 @@
-import type { CSSProperties, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import type { PageDetail as PageDetailData, PageSummary, Scan } from "../api";
 import { PageDetail } from "./PageDetail";
 import { PageTable } from "./PageTable";
 
 function DetailsPane({ branchKey, children }: { branchKey: string; children: ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  // `branchKey` is carried on the <DetailsPane key={branchKey}> below: each
-  // state change unmounts/remounts this component, resetting `mounted` to
-  // false so the incoming content fades in from its entry state.
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const reduced =
-    typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
-
-  const style: CSSProperties = reduced
-    ? {}
-    : {
-        opacity: mounted ? 1 : 0,
-        transform: mounted ? "translateY(0)" : "translateY(2px)",
-        transition: "opacity 150ms var(--ease-out), transform 150ms var(--ease-out)",
-      };
-
+  // Enter animation is pure-CSS via @starting-style in styles.css: the
+  // `key={branchKey}` below remounts this component on each state change, so
+  // the new pane fades in from opacity:0 without JS mount-state to go stale.
   return (
-    <div data-branch={branchKey} style={style}>
+    <div className="details-pane" data-branch={branchKey}>
       {children}
     </div>
   );

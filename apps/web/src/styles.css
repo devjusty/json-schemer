@@ -413,6 +413,33 @@ button,
   transition-duration: var(--duration-base);
   transition-timing-function: var(--ease-out);
 }
+/* Detail-pane enter on branch swap. The `key={branchKey}` on <DetailsPane>
+   remounts it per state change; @starting-style paints the entry frame (opacity:0)
+   so the CSS transition fires 0->1 without JS mount-state to go stale on HMR. */
+.details-pane {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 150ms var(--ease-out),
+    transform 150ms var(--ease-out);
+}
+@starting-style {
+  .details-pane {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .details-pane {
+    transition: none;
+  }
+  @starting-style {
+    .details-pane {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
   button:not(.link-button):active:not(:disabled),
   .link-button:active {
