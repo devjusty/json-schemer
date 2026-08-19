@@ -261,6 +261,7 @@ button:disabled {
 .table-wrap {
   overflow-x: auto;
   border: 1px solid #354139;
+  border-radius: 0;
 }
 table {
   width: 100%;
@@ -296,7 +297,11 @@ th {
   color: #d7ef9e;
   text-align: left;
   font-weight: 400;
-  transition: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition-property: transform;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
 }
 .link-button:focus-visible {
   outline-offset: 4px;
@@ -319,6 +324,7 @@ th {
   min-height: 300px;
   padding: 20px;
   overflow: hidden;
+  border-radius: 0;
 }
 .detail-panel h2 {
   overflow-wrap: anywhere;
@@ -409,6 +415,9 @@ button,
 }
 @media (prefers-reduced-motion: no-preference) {
   button:not(.link-button):active:not(:disabled),
+  .link-button:active {
+    transform: scale(0.96);
+  }
   .export-bar a:active {
     transform: scale(0.96);
   }
