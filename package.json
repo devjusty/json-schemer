@@ -1,14 +1,14 @@
 {
   "name": "json-schemer",
   "private": true,
-  "packageManager": "pnpm@10.33.3",
+  "packageManager": "pnpm@11.22.0",
   "scripts": {
     "prepare": "husky",
     "test": "vitest run",
     "test:ui": "vitest run apps/web/test",
     "typecheck": "tsc --noEmit",
     "build": "pnpm -r build",
-    "dev": "concurrently -k \"pnpm --filter @schemer/server dev\" \"pnpm --filter @schemer/web dev\"",
+    "dev": "concurrently -k \"pnpm --filter @schemer/server dev\" \"wait-on tcp:127.0.0.1:4317 && pnpm --filter @schemer/web dev\"",
     "test:e2e": "playwright test",
     "format": "biome format --write .",
     "format:check": "biome format .",
@@ -37,7 +37,8 @@
     "jsdom": "^26.1.0",
     "tsx": "^4.20.5",
     "typescript": "^5.9.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "wait-on": "^9.1.0"
   },
   "dependencies": {
     "cheerio": "^1.1.2",
