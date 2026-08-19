@@ -153,6 +153,7 @@ export function useScanSession() {
     const requestId = ++selectionRequest.current;
     const generation = scanGeneration.current;
     const scanId = scan.id;
+    const previousId = selectedId;
     setSelectedId(id);
     setSelectBusy(true);
     try {
@@ -170,10 +171,11 @@ export function useScanSession() {
         generation === scanGeneration.current &&
         scanRef.current?.id === scanId
       ) {
+        setSelectedId(previousId);
         setError(messageFrom(cause));
       }
     } finally {
-      setSelectBusy(false);
+      if (requestId === selectionRequest.current) setSelectBusy(false);
     }
   }
 

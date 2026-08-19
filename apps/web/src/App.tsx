@@ -38,7 +38,10 @@ export function App() {
           onSitemapUrlChange={setSitemapUrl}
           onSubmit={() => void session.startScan(targetUrl, sitemapUrl)}
         />
-        <p className="hint">Balanced crawl · same-origin only · up to 500 URLs · no JavaScript execution</p>
+        <p className="hint">
+          Sitemap is optional; leave blank to discover it from robots.txt. Balanced crawl · same-origin only · up to 500
+          URLs · no JavaScript execution
+        </p>
       </section>
       {session.error && (
         <div className="error-banner" role="alert">
@@ -59,6 +62,7 @@ export function App() {
           onCancel={session.cancelScan}
           cancelBusy={session.cancelBusy}
           busy={session.busy}
+          selectBusy={session.selectBusy}
           onSelectPage={(id) => void session.selectPage(id)}
         />
       )}

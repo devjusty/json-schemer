@@ -31,9 +31,16 @@ export function ProgressPanel({ scan }: { scan: Scan }) {
   const domain = hostnameOf(scan.targetUrl);
   const sitemapUrl = scan.sitemapUrl?.trim() || null;
   const finishedAt = terminal && scan.updatedAt ? formatFinishedAt(scan.updatedAt) : null;
+  const discovered = scan.discovered ?? 0;
+  const completed = scan.completed ?? 0;
+  const successful = scan.successful ?? 0;
+  const failed = scan.failed ?? 0;
 
   return (
     <section className="progress-panel" aria-label="Scan progress">
+      <p className="sr-only" role="status">
+        {title}: {discovered} discovered, {completed} completed, {successful} with JSON-LD, {failed} failed
+      </p>
       <div className="progress-summary">
         <strong>{title}</strong>
         <p className="progress-meta">
@@ -61,16 +68,16 @@ export function ProgressPanel({ scan }: { scan: Scan }) {
       </div>
       <div className="progress-grid">
         <span>
-          <b>{scan.discovered ?? 0}</b> discovered
+          <b>{discovered}</b> discovered
         </span>
         <span>
-          <b>{scan.completed ?? 0}</b> completed
+          <b>{completed}</b> completed
         </span>
         <span>
-          <b>{scan.successful ?? 0}</b> with JSON-LD
+          <b>{successful}</b> with JSON-LD
         </span>
         <span>
-          <b>{scan.failed ?? 0}</b> failed
+          <b>{failed}</b> failed
         </span>
       </div>
     </section>

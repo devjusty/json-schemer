@@ -111,18 +111,11 @@ button,
   cursor: pointer;
   text-decoration: none;
   font-weight: 700;
-  transition-property: transform, background-color, border-color, color;
-  transition-duration: 150ms;
-  transition-timing-function: ease-out;
 }
 button:not(.link-button):not(:disabled):hover,
 .export-bar a:hover {
   background: #c8e892;
   border-color: #c8e892;
-}
-button:not(.link-button):active:not(:disabled),
-.export-bar a:active {
-  transform: scale(0.96);
 }
 button:focus:not(:focus-visible),
 a:focus:not(:focus-visible),
@@ -158,6 +151,7 @@ button:disabled {
   margin-top: 10px;
 }
 .progress-panel {
+  position: relative;
   display: flex;
   justify-content: space-between;
   gap: 20px;
@@ -216,6 +210,7 @@ button:disabled {
 }
 .export-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   margin: 18px 0;
@@ -225,7 +220,7 @@ button:disabled {
 .export-bar a {
   position: relative;
   padding: 8px 11px;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
 }
 .export-bar a::before,
 .export-bar button::before {
@@ -242,12 +237,12 @@ button:disabled {
   color: #667366;
   padding: 8px 11px;
   cursor: not-allowed;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
 }
 .partial-label {
   color: #e0bd76;
   font:
-    0.68rem ui-monospace,
+    0.8125rem ui-monospace,
     monospace;
   text-transform: uppercase;
 }
@@ -258,7 +253,7 @@ button:disabled {
   background: transparent;
   color: #ef9277;
   padding: 8px 11px;
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
 }
 .export-bar button:hover:not(:disabled) {
   background: transparent;
@@ -290,16 +285,13 @@ td {
 th {
   color: #7e8b7d;
   font:
-    0.68rem ui-monospace,
+    0.8125rem ui-monospace,
     monospace;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 .table-wrap tbody tr {
   cursor: pointer;
-  transition-property: background-color;
-  transition-duration: 150ms;
-  transition-timing-function: ease-out;
 }
 .table-wrap tbody tr:hover {
   background: #1e2820;
@@ -323,7 +315,7 @@ th {
 .status {
   color: #d7ef9e;
   font:
-    0.68rem ui-monospace,
+    0.8125rem ui-monospace,
     monospace;
 }
 .status-http_error,
@@ -351,10 +343,11 @@ th {
 }
 .page-exports {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin: 18px 0;
   font:
-    0.68rem ui-monospace,
+    0.8125rem ui-monospace,
     monospace;
   text-transform: uppercase;
 }
@@ -395,6 +388,39 @@ pre {
 }
 .detail-empty {
   min-height: 300px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.code-label {
+  margin: 12px 0 6px;
+  color: #8c9a8a;
+  font-size: 0.8125rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  button,
+  .export-bar a {
+    transition-property: transform, background-color, border-color, color;
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
+  }
+  button:not(.link-button):active:not(:disabled),
+  .export-bar a:active {
+    transform: scale(0.96);
+  }
+  .table-wrap tbody tr {
+    transition-property: background-color;
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
+  }
 }
 @media (max-width: 850px) {
   .shell {

@@ -33,7 +33,7 @@ describe("scanner app", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Start scan" }));
 
-    expect(await screen.findByText("Scan queued")).toBeInTheDocument();
+    expect(await screen.findByText("Scan queued", { selector: "strong" })).toBeInTheDocument();
     expect(screen.getByText("JSON", { selector: ".export-disabled" })).toHaveAttribute("aria-disabled", "true");
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(await screen.findByText("canceled")).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe("scanner app", () => {
     fireEvent.change(screen.getByLabelText("Website URL"), { target: { value: "https://example.com" } });
     fireEvent.click(screen.getByRole("button", { name: "Start scan" }));
 
-    expect(await screen.findByText("Scan queued")).toBeInTheDocument();
+    expect(await screen.findByText("Scan queued", { selector: "strong" })).toBeInTheDocument();
     expect(screen.getByText("JSON", { selector: ".export-disabled" })).toHaveAttribute("aria-disabled", "true");
 
     act(() => {

@@ -33,7 +33,7 @@ test("starts scan and exposes whole-site exports", async ({ page }) => {
   await page.getByLabel("Sitemap URL (optional)").fill("https://example.com/sitemap.xml");
   await page.getByRole("button", { name: "Start scan" }).click();
 
-  await expect(page.getByText("Scan queued")).toBeVisible();
+  await expect(page.locator(".progress-panel strong")).toHaveText("Scan queued");
   await expect(page.locator(".export-disabled").first()).toBeVisible();
   await page.getByRole("button", { name: "Cancel" }).click();
   await expect(page.getByText("Partial results")).toBeVisible();

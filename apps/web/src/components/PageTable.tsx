@@ -1,4 +1,5 @@
 import type { PageSummary } from "../api";
+import { pageStatusLabel } from "../pageStatusLabel";
 
 export function PageTable({
   pages,
@@ -37,7 +38,7 @@ export function PageTable({
                 </button>
               </td>
               <td>
-                <span className={`status status-${page.status}`}>{page.status}</span>
+                <span className={`status status-${page.status}`}>{pageStatusLabel(page.status)}</span>
               </td>
               <td className="num">{page.httpStatus ?? "-"}</td>
               <td>{page.error ?? "-"}</td>

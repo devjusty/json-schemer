@@ -53,6 +53,7 @@ describe("PageDetail", () => {
 
     expect(writeText).toHaveBeenCalledWith('{"broken":');
     expect(screen.getByRole("button", { name: "Copy JSON-LD block 1" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Unable to copy. Check clipboard permission and try again.");
   });
 
   it("keeps latest copied confirmation until its timer expires", async () => {

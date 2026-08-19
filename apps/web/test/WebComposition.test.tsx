@@ -53,6 +53,7 @@ describe("web composition components", () => {
         onCancel={vi.fn()}
         cancelBusy={false}
         busy={false}
+        selectBusy={false}
         onSelectPage={vi.fn()}
       />,
     );
@@ -67,12 +68,22 @@ describe("web composition components", () => {
     expect(screen.getByText(/Finished /)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Whole-site JSON" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: page.url })).toBeInTheDocument();
+    expect(screen.getByText("Success", { selector: ".status" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: page.url })).toBeInTheDocument();
   });
 
   it("composes page table and detail selection", () => {
     const onSelect = vi.fn();
-    render(<PageResults scan={scan} pages={[page]} detail={detail} selectedId={page.id} onSelect={onSelect} />);
+    render(
+      <PageResults
+        scan={scan}
+        pages={[page]}
+        detail={detail}
+        selectedId={page.id}
+        selectBusy={false}
+        onSelect={onSelect}
+      />,
+    );
 
     fireEvent.click(screen.getByRole("button", { name: page.url }));
     expect(onSelect).toHaveBeenCalledOnce();

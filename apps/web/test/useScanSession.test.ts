@@ -237,6 +237,8 @@ describe("useScanSession", () => {
     await act(async () => screen.getByRole("button", { name: "select one" }).click());
 
     expect(await screen.findByTestId("error")).toHaveTextContent("detail unavailable");
+    expect(screen.getByTestId("selected")).toHaveTextContent("none");
+    expect(screen.getByTestId("detail")).toHaveTextContent("none");
   });
 
   it("reports scan creation errors and clears busy state", async () => {

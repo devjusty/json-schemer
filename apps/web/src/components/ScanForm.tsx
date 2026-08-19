@@ -19,6 +19,11 @@ export function ScanForm({ targetUrl, sitemapUrl, busy, onTargetUrlChange, onSit
       <label>
         Website URL
         <input
+          name="url"
+          type="url"
+          inputMode="url"
+          autoComplete="url"
+          spellCheck={false}
           value={targetUrl}
           onChange={(event) => onTargetUrlChange(event.currentTarget.value)}
           placeholder="https://example.com"
@@ -28,9 +33,14 @@ export function ScanForm({ targetUrl, sitemapUrl, busy, onTargetUrlChange, onSit
       <label>
         Sitemap URL (optional)
         <input
+          name="sitemapUrl"
+          type="url"
+          inputMode="url"
+          autoComplete="url"
+          spellCheck={false}
           value={sitemapUrl}
           onChange={(event) => onSitemapUrlChange(event.currentTarget.value)}
-          placeholder="Auto-discover from robots.txt"
+          placeholder="https://example.com/sitemap.xml"
         />
       </label>
       <button type="submit" disabled={busy}>

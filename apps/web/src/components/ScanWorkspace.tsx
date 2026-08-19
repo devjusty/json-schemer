@@ -11,6 +11,7 @@ export function ScanWorkspace({
   onCancel,
   cancelBusy,
   busy,
+  selectBusy,
   onSelectPage,
 }: {
   scan: Scan;
@@ -20,13 +21,21 @@ export function ScanWorkspace({
   onCancel: () => void;
   cancelBusy: boolean;
   busy: boolean;
+  selectBusy: boolean;
   onSelectPage: (id: string) => void;
 }) {
   return (
     <>
       <ProgressPanel scan={scan} />
       <ExportBar scan={scan} onCancel={onCancel} cancelBusy={cancelBusy} disabled={busy} />
-      <PageResults scan={scan} pages={pages} detail={detail} selectedId={selectedId} onSelect={onSelectPage} />
+      <PageResults
+        scan={scan}
+        pages={pages}
+        detail={detail}
+        selectedId={selectedId}
+        selectBusy={selectBusy}
+        onSelect={onSelectPage}
+      />
     </>
   );
 }

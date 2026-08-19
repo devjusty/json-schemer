@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { PageDetail as PageDetailData } from "../api";
+import { pageStatusLabel } from "../pageStatusLabel";
 
 export function PageDetail({
   detail,
@@ -11,6 +12,7 @@ export function PageDetail({
   scanStatus: string;
 }) {
   const [copiedBlockId, setCopiedBlockId] = useState<string | null>(null);
+  const [copyErrorBlockId, setCopyErrorBlockId] = useState<string | null>(null);
   const copiedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const exportsReady = ["completed", "canceled", "failed"].includes(scanStatus);
   const partial = scanStatus !== "completed";
@@ -25,7 +27,7 @@ export function PageDetail({
     <aside className="detail-panel">
       <h2>{detail.page.url}</h2>
       <p className="muted">
-        {detail.page.status} · {detail.blocks.length} JSON-LD blocks
+        {pageStatusLabel(detail.page.status)} · {detail.blocks.length} JSON-LD blocks
       </p>
       <div className="page-exports">
         {partial && <span className="partial-label">Partial results</span>}
@@ -51,6 +53,7 @@ export function PageDetail({
             onClick={async () => {
               try {
                 await navigator.clipboard.writeText(block.rawText);
+                setCopyErrorBlockId(null);
                 setCopiedBlockId(block.id);
                 if (copiedTimer.current !== null) clearTimeout(copiedTimer.current);
                 copiedTimer.current = setTimeout(() => {
@@ -58,7 +61,8 @@ export function PageDetail({
                   copiedTimer.current = null;
                 }, 1500);
               } catch {
-                // Clipboard access can be unavailable or rejected by the browser.
+                setCopiedBlockId(null);
+                setCopyErrorBlockId(block.id);
               }
             }}
           >
@@ -67,8 +71,19 @@ export function PageDetail({
               : `Copy JSON-LD block ${block.ordinal}`}
           </button>
           {block.parseError && <p className="error-text">{block.parseError}</p>}
+          {copyErrorBlockId === block.id && (
+            <p className="error-text" role="status">
+              Unable to copy. Check clipboard permission and try again.
+            </p>
+          )}
+          <p className="code-label">Raw</p>
           <pre>{block.rawText}</pre>
-          {block.parsed != null && <pre>{JSON.stringify(block.parsed, null, 2)}</pre>}
+          {block.parsed != null && (
+            <>
+              <p className="code-label">Parsed</p>
+              <pre>{JSON.stringify(block.parsed, null, 2)}</pre>
+            </>
+          )}
         </details>
       ))}
     </aside>
