@@ -1,4 +1,5 @@
 import type { Scan } from "../api";
+import { NumberTicker } from "./NumberTicker";
 
 const TERMINAL = new Set(["completed", "canceled", "failed"]);
 
@@ -68,16 +69,28 @@ export function ProgressPanel({ scan }: { scan: Scan }) {
       </div>
       <div className="progress-grid">
         <span>
-          <b>{discovered}</b> discovered
+          <b>
+            <NumberTicker value={discovered} />
+          </b>{" "}
+          discovered
         </span>
         <span>
-          <b>{completed}</b> completed
+          <b>
+            <NumberTicker value={completed} />
+          </b>{" "}
+          completed
         </span>
         <span>
-          <b>{successful}</b> with JSON-LD
+          <b>
+            <NumberTicker value={successful} />
+          </b>{" "}
+          with JSON-LD
         </span>
         <span>
-          <b>{failed}</b> failed
+          <b>
+            <NumberTicker value={failed} />
+          </b>{" "}
+          failed
         </span>
       </div>
     </section>

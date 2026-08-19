@@ -5,6 +5,8 @@
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-base: 150ms;
 }
 
 * {
@@ -111,11 +113,6 @@ button,
   cursor: pointer;
   text-decoration: none;
   font-weight: 700;
-}
-button:not(.link-button):not(:disabled):hover,
-.export-bar a:hover {
-  background: #c8e892;
-  border-color: #c8e892;
 }
 button:focus:not(:focus-visible),
 a:focus:not(:focus-visible),
@@ -255,11 +252,6 @@ button:disabled {
   padding: 8px 11px;
   font-size: 0.8125rem;
 }
-.export-bar button:hover:not(:disabled) {
-  background: transparent;
-  border-color: #a66a60;
-  color: #ffc0a8;
-}
 .results-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
@@ -292,9 +284,6 @@ th {
 }
 .table-wrap tbody tr {
   cursor: pointer;
-}
-.table-wrap tbody tr:hover {
-  background: #1e2820;
 }
 .table-wrap tbody tr.selected,
 .table-wrap tbody tr.selected:hover {
@@ -405,21 +394,38 @@ pre {
   color: #8c9a8a;
   font-size: 0.8125rem;
 }
+/* ---- Motion: transitions + reduced-motion + fine-hover gating ---- */
+button,
+.export-bar a,
+.table-wrap tbody tr {
+  transition-property: transform, background-color, border-color, color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+.status {
+  transition-property: color;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
 @media (prefers-reduced-motion: no-preference) {
-  button,
-  .export-bar a {
-    transition-property: transform, background-color, border-color, color;
-    transition-duration: 150ms;
-    transition-timing-function: ease-out;
-  }
   button:not(.link-button):active:not(:disabled),
   .export-bar a:active {
     transform: scale(0.96);
   }
-  .table-wrap tbody tr {
-    transition-property: background-color;
-    transition-duration: 150ms;
-    transition-timing-function: ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  button:not(.link-button):not(:disabled):hover,
+  .export-bar a:hover {
+    background-color: #c8e892;
+    border-color: #c8e892;
+  }
+  .export-bar button:hover:not(:disabled) {
+    background: transparent;
+    border-color: #a66a60;
+    color: #ffc0a8;
+  }
+  .table-wrap tbody tr:hover {
+    background: #1e2820;
   }
 }
 @media (max-width: 850px) {
