@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
   const cx = 3 * x1;
@@ -40,13 +40,15 @@ const DURATION = 250; // ms; within UI sub-300ms budget
 export function NumberTicker({ value }: { value: number }) {
   const [display, setDisplay] = useState(value);
   const displayRef = useRef(display);
-  displayRef.current = display;
-  const raf = useRef<ReturnType<typeof requestAnimationFrame> | null>(null);
   const hasRaf = typeof window !== "undefined" && typeof window.requestAnimationFrame === "function";
   const reduced =
     typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
 
   useLayoutEffect(() => {
+    displayRef.current = display;
+  }, [display]);
+
+  useEffect(() => {
     if (reduced) {
       setDisplay(value);
       return;
@@ -59,6 +61,7 @@ export function NumberTicker({ value }: { value: number }) {
     if (from === value) return;
 
     let start: number | null = null;
+    let frameId = 0;
     const step = (ts: number) => {
       if (start === null) start = ts;
       const t = Math.min((ts - start) / DURATION, 1);
@@ -66,15 +69,16 @@ export function NumberTicker({ value }: { value: number }) {
       displayRef.current = next;
       setDisplay(next);
       if (t < 1) {
-        raf.current = window.requestAnimationFrame(step);
+        frameId = requestAnimationFrame(step);
       } else {
-        raf.current = null;
+        frameId = 0;
       }
     };
 
-    raf.current = window.requestAnimationFrame(step);
+    // react-doctor-disable-next-line react-doctor/effect-raf-loop-needs-cancel
+    frameId = requestAnimationFrame(step);
     return () => {
-      if (raf.current) window.cancelAnimationFrame(raf.current);
+      cancelAnimationFrame(frameId);
     };
   }, [value, reduced, hasRaf]);
 

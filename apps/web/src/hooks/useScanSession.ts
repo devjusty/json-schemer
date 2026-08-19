@@ -207,7 +207,7 @@ export function useScanSession() {
         toast.error("Could not load page details", { description: msg });
       }
     } finally {
-      if (requestId === selectionRequest.current) setSelectBusy(false);
+      setSelectBusy(false);
     }
   }
 
