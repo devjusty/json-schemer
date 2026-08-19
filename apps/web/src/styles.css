@@ -3,6 +3,8 @@
   background: #101211;
   font-family: "Source Sans 3 Variable", "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
   font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -41,6 +43,7 @@ a {
     serif;
   letter-spacing: -0.03em;
   color: #f4f0e5;
+  text-wrap: balance;
 }
 .masthead p {
   max-width: 42rem;
@@ -49,6 +52,7 @@ a {
   font-size: 1rem;
   line-height: 1.5;
   letter-spacing: 0.01em;
+  text-wrap: pretty;
 }
 .mark {
   display: grid;
@@ -107,6 +111,29 @@ button,
   cursor: pointer;
   text-decoration: none;
   font-weight: 700;
+  transition-property: transform, background-color, border-color, color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+button:not(.link-button):not(:disabled):hover,
+.export-bar a:hover {
+  background: #c8e892;
+  border-color: #c8e892;
+}
+button:not(.link-button):active:not(:disabled),
+.export-bar a:active {
+  transform: scale(0.96);
+}
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+summary:focus:not(:focus-visible) {
+  outline: none;
+}
+button:focus-visible,
+a:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #b7db7a;
+  outline-offset: 2px;
 }
 button:disabled {
   cursor: wait;
@@ -117,6 +144,7 @@ button:disabled {
   margin: 14px 0 0;
   color: #7e8b7d;
   font-size: 0.78rem;
+  text-wrap: pretty;
 }
 .error-banner,
 .error-text {
@@ -149,6 +177,7 @@ button:disabled {
     Georgia,
     serif;
   text-transform: capitalize;
+  text-wrap: balance;
 }
 .progress-meta {
   display: flex;
@@ -183,6 +212,7 @@ button:disabled {
     "Source Serif 4",
     Georgia,
     serif;
+  font-variant-numeric: tabular-nums;
 }
 .export-bar {
   display: flex;
@@ -193,8 +223,19 @@ button:disabled {
   font-size: 0.8rem;
 }
 .export-bar a {
+  position: relative;
   padding: 8px 11px;
   font-size: 0.7rem;
+}
+.export-bar a::before,
+.export-bar button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 40px);
+  height: max(100%, 40px);
+  transform: translate(-50%, -50%);
 }
 .export-disabled {
   border: 1px solid #4a5b4a;
@@ -211,11 +252,18 @@ button:disabled {
   text-transform: uppercase;
 }
 .export-bar button {
+  position: relative;
   margin-left: auto;
   border-color: #81564e;
   background: transparent;
   color: #ef9277;
   padding: 8px 11px;
+  font-size: 0.7rem;
+}
+.export-bar button:hover:not(:disabled) {
+  background: transparent;
+  border-color: #a66a60;
+  color: #ffc0a8;
 }
 .results-layout {
   display: grid;
@@ -247,7 +295,17 @@ th {
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-tr.selected {
+.table-wrap tbody tr {
+  cursor: pointer;
+  transition-property: background-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+.table-wrap tbody tr:hover {
+  background: #1e2820;
+}
+.table-wrap tbody tr.selected,
+.table-wrap tbody tr.selected:hover {
   background: #28382c;
 }
 .link-button {
@@ -257,6 +315,10 @@ tr.selected {
   color: #d7ef9e;
   text-align: left;
   font-weight: 400;
+  transition: none;
+}
+.link-button:focus-visible {
+  outline-offset: 4px;
 }
 .status {
   color: #d7ef9e;
@@ -285,6 +347,7 @@ tr.selected {
     "Source Serif 4",
     Georgia,
     serif;
+  text-wrap: balance;
 }
 .page-exports {
   display: flex;
@@ -325,6 +388,10 @@ pre {
   color: #8c9a8a;
   font-size: 0.9rem;
   line-height: 1.45;
+  text-wrap: pretty;
+}
+.num {
+  font-variant-numeric: tabular-nums;
 }
 .detail-empty {
   min-height: 300px;

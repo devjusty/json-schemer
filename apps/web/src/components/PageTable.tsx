@@ -39,7 +39,7 @@ export function PageTable({
               <td>
                 <span className={`status status-${page.status}`}>{page.status}</span>
               </td>
-              <td>{page.httpStatus ?? "-"}</td>
+              <td className="num">{page.httpStatus ?? "-"}</td>
               <td>{page.error ?? "-"}</td>
             </tr>
           ))}
